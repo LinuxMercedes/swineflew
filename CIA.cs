@@ -20,6 +20,9 @@ namespace CSClient
                         case Mission.missionTypes.goTo:
                             missionGoTo(m.agent, target, m.walkThroughWater);
                             break;
+                        case Mission.missionTypes.attackAdjacent:
+                            missionAttackAdjacent(m.agent);
+                            break;
                     }
                 }
             }
@@ -44,6 +47,11 @@ namespace CSClient
 						}
 
             BitBoard.Update();
+        }
+
+        private static void missionAttackAdjacent(Unit u)
+        {
+
         }
     }
 }
