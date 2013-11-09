@@ -1,5 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Collections;
+using System.Collections.Generic;
+using CSClient;
 
 /// <summary>
 /// The class implementing gameplay logic.
@@ -182,8 +185,7 @@ class AI : BaseAI
   /// </summary>
   public override void init()
   {
-    BitBoard.width = mapWidth();
-    BitBoard.height = mapHeight();
+    BitBoard.Initialize(this);
   }
 
   /// <summary>
@@ -192,4 +194,84 @@ class AI : BaseAI
   public override void end() { }
 
   public AI(IntPtr c) : base(c) { }
+
+    //our code
+  public void ourRun()
+  {
+      spawnUnits();
+      assignMissions();
+  }
+
+  public void spawnUnits()
+  {
+      int numberOfUnits = 0;
+
+      // Get the number of units owned.
+      for (int i = 0; i < units.Length; i++)
+          if (units[i].Owner == playerID())
+              numberOfUnits++;
+      for (int i = 0; i < tiles.Length; i++)
+      {
+          // If this tile is my spawn tile or my pump station...
+          if (tiles[i].Owner == playerID())
+          {
+              int cost = Int32.MaxValue;
+              for (int j = 0; j < unitTypes.Length; j++)
+                  if (unitTypes[j].Type == (int)Types.Scout)
+                      cost = unitTypes[j].Cost;
+
+              // If there is enough oxygen to spawn the unit...
+              if (players[playerID()].Oxygen >= cost)
+              {
+                  // ...and if we can spawn more units...
+                  if (numberOfUnits < maxUnits())
+                  {
+                      // ...and nothing is spwning on the tile...
+                      if (!tiles[i].IsSpawning)
+                      {
+                          bool canSpawn = true;
+
+                          // If it's a pump station and it's not being seiged...
+                          if (tiles[i].PumpID != -1)
+                          {
+                              // ...find the pump in the vector.
+                              for (int j = 0; j < pumpStations.Length; j++)
+                              {
+                                  // If it's being sieged, don't spawn.
+                                  if (pumpStations[j].Id == tiles[i].PumpID && pumpStations[j].SiegeAmount > 0)
+                                      canSpawn = false;
+                              }
+                          }
+
+                          // If there is someone else on the tile, don't spawn.
+                          for (int j = 0; j < units.Length; j++)
+                              if (tiles[i].X == units[j].X && tiles[i].Y == units[j].Y)
+                                  canSpawn = false;
+
+                          // If possible, spawn!
+                          if (canSpawn)
+                          {
+                              tiles[i].spawn((int)Types.Scout);
+                              numberOfUnits++;
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }
+
+  public List<Mission> assignMissions()
+  {
+      List<Mission> missions = new List<Mission>();
+      foreach (Unit u in units)
+      {
+          if (u.Owner == playerID())
+          {
+              //change lambda to equal enemy pumps
+              missions.Add(new Mission(u,()=> new BitArray(1) ,Mission.missionTypes.goTo));
+          }
+      }
+      return missions;
+  }
 }
