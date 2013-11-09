@@ -9,6 +9,7 @@ class AStar
 		List<Node> open = new List<Node>();
 		HashSet<Node> closed = new HashSet<Node>();
 		
+		System.Console.WriteLine("Starting from " + x_start + " " + y_start);
 		Node start = new Node(x_start, y_start);
 		start.g = 0;
 		start.h = heuristic(start, b);
@@ -20,6 +21,8 @@ class AStar
 			Node here = open[0];
 			open.RemoveAt(0);
 			closed.Add(here);
+
+			System.Console.WriteLine("Here: " + here.x + " " + here.y + " f: " + here.f);
 
 			List<Node> moves = genMoves(here, b, avoidWater);
 
@@ -68,6 +71,7 @@ class AStar
 				}
 			}
 		}
+		System.Console.WriteLine("Heuristic for " + n.x + " " + n.y + ": " + h);
 		return h;
 	}
 
@@ -92,27 +96,20 @@ class AStar
 			if (y < 0) continue;
 
 			// See if we can move to that location
-			// other units
-			if (getBb(x, y, BitBoard.myWorkers.Or(BitBoard.myScouts).Or(BitBoard.myTanks))) continue;
-			if (getBb(x, y, BitBoard.oppWorkers.Or(BitBoard.oppScouts).Or(BitBoard.oppTanks))) continue;
+			if (getBb(x, y, BitBoard.iceCaps.Or(BitBoard.mySpawnBases)) )
+			{
+				System.Console.WriteLine("Cannot move to " + x + " " + y);
+				continue;
+			}
 
-			// ice caps
-			if (getBb(x, y, BitBoard.iceCaps)) continue;
-
-			// enemy spawn bases
-			if (getBb(x, y, BitBoard.oppSpawnBases)) continue;
-
-			// spawning tiles
-			// TODO
-			if (getBb(x, y, BitBoard.mySpawningSquares)) continue;
-
-			// water, if so chosen
+			// Avoid water, if so chosen
 			if (avoidWater && getBb(x, y, BitBoard.waterTiles)) continue;
 
 			// Woop, we have a valid move
 			Node move = new Node(x, y, n);
 			move.h = heuristic(n, b);
 			move.f = move.h + move.g;
+			System.Console.WriteLine("Adding " + x + " " + y + " f: " + move.f);
 			moves.Add(move);
 		}
 
