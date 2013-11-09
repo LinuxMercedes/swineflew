@@ -39,9 +39,9 @@ class AStar
 		if(open.Count > 0)
 		{
 			path.Add(open[0]);
-			while(path[-1].parent != null)
+			while(path[path.Count - 1].parent != null)
 			{
-				path.Add(path[-1].parent);
+				path.Add(path[path.Count - 1].parent);
 			}
 		}
 		path.Reverse();
@@ -93,8 +93,8 @@ class AStar
 
 			// See if we can move to that location
 			// other units
-			if (getBb(x, y, BitBoard.myWorkers.And(BitBoard.myScouts).And(BitBoard.myTanks))) continue;
-			if (getBb(x, y, BitBoard.oppWorkers.And(BitBoard.oppScouts).And(BitBoard.oppTanks))) continue;
+			if (getBb(x, y, BitBoard.myWorkers.Or(BitBoard.myScouts).Or(BitBoard.myTanks))) continue;
+			if (getBb(x, y, BitBoard.oppWorkers.Or(BitBoard.oppScouts).Or(BitBoard.oppTanks))) continue;
 
 			// ice caps
 			if (getBb(x, y, BitBoard.iceCaps)) continue;
