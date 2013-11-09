@@ -196,9 +196,9 @@ class BitBoard
     // initialize generic bitboards
     myOccupiedTiles = myWorkers.Or(myScouts.Or(myTanks));
     oppOccupiedTiles = oppWorkers.Or(oppScouts.Or(oppTanks));
-    myNonMotionTiles = myOccupiedTiles.Or(oppOccupiedTiles.Or(mySpawningSquares.Or(oppSpawnBases)));
+    myNonMotionTiles = myOccupiedTiles.Or(oppOccupiedTiles.Or(mySpawningSquares.Or(oppSpawnBases.Or(iceCaps))));
     myMotionTiles = myNonMotionTiles.Xor(full);
-    oppNonMotionTiles = oppOccupiedTiles.Or(myOccupiedTiles.Or(oppSpawningSquares.Or(mySpawnBases)));
+    oppNonMotionTiles = oppOccupiedTiles.Or(myOccupiedTiles.Or(oppSpawningSquares.Or(mySpawnBases.Or(iceCaps))));
     oppMotionTiles = oppNonMotionTiles.Xor(full);
   }
 
