@@ -12,11 +12,14 @@ namespace CSClient
         public Unit agent;
         public Func<BitArray> target;
         public missionTypes missionType;
-        public Mission(Unit agent, Func<BitArray> target, missionTypes missionType)
+        public bool walkThroughWater;
+
+        public Mission(Unit agent, Func<BitArray> target, missionTypes missionType, bool walkThroughWater = false)
         {
             this.agent = agent;
             this.target = target;
             this.missionType = missionType;
+            this.walkThroughWater = walkThroughWater;
         }
     }
 }
