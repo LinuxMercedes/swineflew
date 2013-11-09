@@ -10,7 +10,7 @@ using CSClient;
 class AI : BaseAI
 {
   // Enum for types of units you can spawn.
-  enum Types { Worker, Scout, Tank };
+  public enum Types { Worker, Scout, Tank };
 
   public override string username()
   {
