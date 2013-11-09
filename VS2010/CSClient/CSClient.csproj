@@ -34,17 +34,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\AI.cs" />
-    <Compile Include="..\..\BaseAI.cs" />
-    <Compile Include="..\..\Client.cs" />
-    <Compile Include="..\..\ExistentialError.cs" />
-    <Compile Include="..\..\Main.cs" />
-    <Compile Include="..\..\Mappable.cs" />
-    <Compile Include="..\..\Player.cs" />
-    <Compile Include="..\..\PumpStation.cs" />
-    <Compile Include="..\..\Tile.cs" />
-    <Compile Include="..\..\Unit.cs" />
-    <Compile Include="..\..\UnitType.cs" />
+    <Compile Include="AI.cs" />
+    <Compile Include="BaseAI.cs" />
+    <Compile Include="BitBoard.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="ExistentialError.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Mappable.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="PumpStation.cs" />
+    <Compile Include="Tile.cs" />
+    <Compile Include="Unit.cs" />
+    <Compile Include="UnitType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
