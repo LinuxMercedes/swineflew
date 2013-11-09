@@ -8,7 +8,7 @@ namespace CSClient
 {
     class Mission
     {
-        public static enum missionTypes { goTo };
+        public enum missionTypes { goTo };
         public Unit agent;
         public Func<BitArray> target;
         public missionTypes missionType;
