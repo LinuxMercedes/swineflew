@@ -7,8 +7,13 @@ codegen/output
 
 # PyCharm data doesn't go in the repository
 .idea/
+
+# fuckin' vim
+.*.sw?
+
 # Compiled client stuff we don't want
 client/library/sexp/lex.yy.*
+library/sexp/lex.yy.*
 
 #Game logs don't go in the repository
 *.gamelog
