@@ -8,15 +8,18 @@ namespace CSClient
 {
     class Mission
     {
-        public static enum missionTypes { goTo };
+        public enum missionTypes { goTo };
         public Unit agent;
         public Func<BitArray> target;
         public missionTypes missionType;
-        public Mission(Unit agent, Func<BitArray> target, missionTypes missionType)
+        public bool walkThroughWater;
+
+        public Mission(Unit agent, Func<BitArray> target, missionTypes missionType, bool walkThroughWater = false)
         {
             this.agent = agent;
             this.target = target;
             this.missionType = missionType;
+            this.walkThroughWater = walkThroughWater;
         }
     }
 }
