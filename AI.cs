@@ -182,8 +182,7 @@ class AI : BaseAI
   /// </summary>
   public override void init()
   {
-    BitBoard.width = mapWidth();
-    BitBoard.height = mapHeight();
+    BitBoard.Initialize(this);
   }
 
   /// <summary>
