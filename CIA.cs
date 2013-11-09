@@ -28,7 +28,7 @@ namespace CSClient
             }
         }
 
-        
+
         //goto should go to the nearest non-occupied square
         //from the target bit board
         private static void missionGoTo(Unit u, BitArray b, bool walkThroughWater)
@@ -38,20 +38,34 @@ namespace CSClient
                 return;
             }
 
-						List<Node> path = AStar.route(u.X, u.Y, b, !walkThroughWater);
-						foreach(Node n in path)
-						{
-							if(u.MovementLeft == 0) break;
+            List<Node> path = AStar.route(u.X, u.Y, b, !walkThroughWater);
+            foreach (Node n in path)
+            {
+                if (u.MovementLeft == 0) break;
 
-							u.move(n.x, n.y);
-						}
+                u.move(n.x, n.y);
+            }
 
             BitBoard.Update();
         }
 
         private static void missionAttackAdjacent(Unit u)
         {
-
+            if (!u.HasAttacked)
+                foreach (Unit unit in AI.units)
+                {
+                    if (u.X == unit.X && (u.Y - 1 == unit.Y || u.Y + 1 == unit.Y))
+                    {
+                        u.attack(unit);
+                        break;
+                    }
+                    else if (u.Y == unit.Y && (u.X - 1 == unit.X || u.X + 1 == unit.X))
+                    {
+                        u.attack(unit);
+                        break;
+                    }
+                }
+            BitBoard.Update();
         }
     }
 }
