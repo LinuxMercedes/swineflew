@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using CSClient;
 
 /// <summary>
 /// The class implementing gameplay logic.
@@ -192,4 +193,16 @@ class AI : BaseAI
   public override void end() { }
 
   public AI(IntPtr c) : base(c) { }
+
+
+    //our code
+  public void ourRun()
+  {
+      spawnUnits();
+  }
+
+  public void spawnUnits()
+  {
+
+  }
 }
