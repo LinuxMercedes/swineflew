@@ -180,7 +180,11 @@ class AI : BaseAI
   /// <summary>
   /// This function is called once, before your first turn.
   /// </summary>
-  public override void init() { }
+  public override void init()
+  {
+    BitBoard.width = mapWidth();
+    BitBoard.height = mapHeight();
+  }
 
   /// <summary>
   /// This function is called once, after your last turn.
