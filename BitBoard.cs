@@ -6,6 +6,10 @@ using System.Text;
 
 class BitBoard
 {
+  // player ids
+  public static int myID;
+  public static int oppID;
+
   // bitboard dimensions
   public static int width;
   public static int height;
@@ -24,6 +28,8 @@ class BitBoard
   public static BitArray myScouts;
   public static BitArray myTanks;
   public static BitArray myOccupiedTiles;
+  public static BitArray myMotionTiles;
+  public static BitArray myNonMotionTiles;
   public static BitArray oppPumpStations;
   public static BitArray oppSpawnBases;
   public static BitArray oppSpawningSquares;
@@ -31,18 +37,31 @@ class BitBoard
   public static BitArray oppScouts;
   public static BitArray oppTanks;
   public static BitArray oppOccupiedTiles;
+  public static BitArray oppMotionTiles;
+  public static BitArray oppNonMotionTiles;
 
   // neutral occupancy bitboards
   public static BitArray waterTiles;
   public static BitArray trenchTiles;
   public static BitArray dirtTiles;
   public static BitArray iceCaps;
-  public static BitArray occupiedTiles;
-  public static BitArray unoccupiedTiles;
 
   // initializes and populates the bitboard objects
   public static void Initialize(AI ai)
   {
+    // initialize player ids
+    foreach (Player player in BaseAI.players)
+    {
+      if (player.Id == ai.playerID())
+      {
+        myID = player.Id;
+      }
+      else
+      {
+        oppID = player.Id;
+      }
+    }
+
     // initialize bitboard dimensions
     width = ai.mapWidth();
     height = ai.mapHeight();
@@ -79,38 +98,11 @@ class BitBoard
     trenchTiles = new BitArray(length, false);
     dirtTiles  = new BitArray(length, false);
     iceCaps = new BitArray(length, false);
+
     foreach (Tile tile in BaseAI.tiles)
     {
       switch (tile.Owner)
       {
-        case 0: // my tile
-          if (tile.PumpID != -1) // my pump station
-          {
-            SetBit(myPumpStations, tile.X, tile.Y, true);
-          }
-          else if (tile.IsSpawning) // my spawning square
-          {
-            SetBit(mySpawningSquares, tile.X, tile.Y, true);
-          }
-          else // my spawn base
-          {
-            SetBit(mySpawnBases, tile.X, tile.Y, true);
-          }
-          break;
-        case 1: // opp tile
-          if (tile.PumpID != -1) // opp pump station
-          {
-            SetBit(oppPumpStations, tile.X, tile.Y, true);
-          }
-          else if (tile.IsSpawning) // opp spawning square
-          {
-            SetBit(oppSpawningSquares, tile.X, tile.Y, true);
-          }
-          else // opp spawn base
-          {
-            SetBit(oppSpawnBases, tile.X, tile.Y, true);
-          }
-          break;
         case 2: // neutral tile
           if (tile.Depth == 0) // dirt tile
           {
@@ -128,8 +120,85 @@ class BitBoard
         case 3: // ice cap
           SetBit(iceCaps, tile.X, tile.Y, true);
           break;
+        default:
+          if (tile.Owner == myID) // my tile
+          {
+            if (tile.PumpID != -1) // my pump station
+            {
+              SetBit(myPumpStations, tile.X, tile.Y, true);
+            }
+            else if (tile.IsSpawning) // my spawning square
+            {
+              SetBit(mySpawningSquares, tile.X, tile.Y, true);
+            }
+            else // my spawn base
+            {
+              SetBit(mySpawnBases, tile.X, tile.Y, true);
+            }
+          }
+          else if (tile.Owner == oppID) // opp tile
+          {
+            if (tile.PumpID != -1) // opp pump station
+            {
+              SetBit(oppPumpStations, tile.X, tile.Y, true);
+            }
+            else if (tile.IsSpawning) // opp spawning square
+            {
+              SetBit(oppSpawningSquares, tile.X, tile.Y, true);
+            }
+            else // opp spawn base
+            {
+              SetBit(oppSpawnBases, tile.X, tile.Y, true);
+            }
+          }
+          break;
       }
     }
+
+    foreach (Unit unit in BaseAI.units)
+    {
+      switch (unit.Type)
+      {
+        case (int)AI.Types.Worker:
+          if (unit.Owner == myID) // my worker
+          {
+            SetBit(myWorkers, unit.X, unit.Y, true);
+          }
+          else if (unit.Owner == oppID) // opp worker
+          {
+            SetBit(oppWorkers, unit.X, unit.Y, true);
+          }
+          break;
+        case (int)AI.Types.Scout:
+          if (unit.Owner == myID) // my worker
+          {
+            SetBit(myScouts, unit.X, unit.Y, true);
+          }
+          else if (unit.Owner == oppID) // opp worker
+          {
+            SetBit(oppScouts, unit.X, unit.Y, true);
+          }
+          break;
+        case (int)AI.Types.Tank:
+          if (unit.Owner == myID) // my worker
+          {
+            SetBit(myTanks, unit.X, unit.Y, true);
+          }
+          else if (unit.Owner == oppID) // opp worker
+          {
+            SetBit(oppTanks, unit.X, unit.Y, true);
+          }
+          break;
+      }
+    }
+
+    // initialize generic bitboards
+    myOccupiedTiles = myWorkers.Or(myScouts.Or(myTanks));
+    oppOccupiedTiles = oppWorkers.Or(oppScouts.Or(oppTanks));
+    myNonMotionTiles = myOccupiedTiles.Or(oppOccupiedTiles.Or(mySpawningSquares.Or(oppSpawnBases)));
+    myMotionTiles = myNonMotionTiles.Xor(full);
+    oppNonMotionTiles = oppOccupiedTiles.Or(myOccupiedTiles.Or(oppSpawningSquares.Or(mySpawnBases)));
+    oppMotionTiles = oppNonMotionTiles.Xor(full);
   }
 
   // clears the data in the non-constant bitboard objects
@@ -152,5 +221,11 @@ class BitBoard
   public static void SetBit(BitArray bitboard, int x, int y, bool value)
   {
     bitboard.Set((x * width) + y, value);
+  }
+
+  // gets the value of a specific bit in a bitboard using (x,y) coordinates
+  public static bool GetBit(BitArray bitboard, int x, int y)
+  {
+    return bitboard.Get((x * width) + y);
   }
 }
