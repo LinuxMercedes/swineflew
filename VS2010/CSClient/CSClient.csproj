@@ -40,6 +40,9 @@
     <Compile Include="..\..\AI.cs">
       <Link>AI.cs</Link>
     </Compile>
+    <Compile Include="..\..\astar.cs">
+      <Link>astar.cs</Link>
+    </Compile>
     <Compile Include="..\..\BaseAI.cs">
       <Link>BaseAI.cs</Link>
     </Compile>
