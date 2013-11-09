@@ -35,9 +35,13 @@ namespace CSClient
                 return;
             }
 
+						List<Node> path = AStar.route(u.X, u.Y, b, !walkThroughWater);
+						foreach(Node n in path)
+						{
+							if(u.MovementLeft == 0) break;
 
- //nathan finish implementing this function here
-
+							u.move(n.x, n.y);
+						}
 
             BitBoard.Update();
         }

@@ -2,64 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-class Node : IEquatable<Node>, IComparable<Node>
-{
-	public int f{get;set;}
-	public int g{get;set;}
-	public int h{get;set;}
-
-	public Node parent{get;set;}
-
-	public int x{get;set;}
-	public int y{get;set;}
-
-	public Node(int xv, int yv, Node p = null)
-	{
-		x = xv;
-		y = yv;
-		parent = p;
-		if(p != null)
-		{
-			g = p.g + 1;
-		}
-	}
-
-	int IComparable<Node>.CompareTo(Node o)
-	{
-		if(f == o.f) return 0;
-		if(f < o.f) return -1;
-		return 1;
-	}
-
-	public override bool Equals( Object obj )
-	{
-		var other = obj as Node;
-		if( other == null ) return false;
-
-		return Equals (other);
-	}
-
-	public override int GetHashCode()
-	{
-		return 1000 * (int) x + (int) y;
-	}
-
-	public bool Equals( Node other )
-	{
-		if( other == null )
-		{
-			return false;
-		}
-
-		if( ReferenceEquals (this, other) )
-		{
-			return true;
-		}
-
-		return x == other.x && y == other.y;
-	}
-}
-
 class AStar
 {
 	static public List<Node> route(int x_start, int y_start, BitArray b, bool avoidWater = true)
@@ -183,3 +125,60 @@ class AStar
 	}
 }
 
+class Node : IEquatable<Node>, IComparable<Node>
+{
+	public int f{get;set;}
+	public int g{get;set;}
+	public int h{get;set;}
+
+	public Node parent{get;set;}
+
+	public int x{get;set;}
+	public int y{get;set;}
+
+	public Node(int xv, int yv, Node p = null)
+	{
+		x = xv;
+		y = yv;
+		parent = p;
+		if(p != null)
+		{
+			g = p.g + 1;
+		}
+	}
+
+	int IComparable<Node>.CompareTo(Node o)
+	{
+		if(f == o.f) return 0;
+		if(f < o.f) return -1;
+		return 1;
+	}
+
+	public override bool Equals( Object obj )
+	{
+		var other = obj as Node;
+		if( other == null ) return false;
+
+		return Equals (other);
+	}
+
+	public override int GetHashCode()
+	{
+		return 1000 * (int) x + (int) y;
+	}
+
+	public bool Equals( Node other )
+	{
+		if( other == null )
+		{
+			return false;
+		}
+
+		if( ReferenceEquals (this, other) )
+		{
+			return true;
+		}
+
+		return x == other.x && y == other.y;
+	}
+}
