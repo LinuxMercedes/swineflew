@@ -70,6 +70,7 @@ class BitBoard
     // initialize constant bitboards
     empty = new BitArray(length, false);
     full = new BitArray(length, true);
+
     position = new BitArray[width][];
     for (int i = 0; i < width; i++)
     {
@@ -77,7 +78,7 @@ class BitBoard
       for (int j = 0; j < height; j++)
       {
         position[i][j] = new BitArray(length, false);
-        position[i][j].Set((width * i) + j, true);
+        SetBit(position[i][j], i, j, true);
       }
     }
     
@@ -334,12 +335,12 @@ class BitBoard
   // sets the value of a specific bit in a bitboard using (x,y) coordinates
   public static void SetBit(BitArray bitboard, int x, int y, bool value)
   {
-    bitboard.Set((x * width) + y, value);
+    bitboard.Set((x * height) + y, value);
   }
 
   // gets the value of a specific bit in a bitboard using (x,y) coordinates
   public static bool GetBit(BitArray bitboard, int x, int y)
   {
-    return bitboard.Get((x * width) + y);
+    return bitboard.Get((x * height) + y);
   }
 }
