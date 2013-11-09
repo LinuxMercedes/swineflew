@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
@@ -22,4 +20,3 @@ namespace CSClient
         }
     }
 }
->>>>>>> a131fc6570fdbd14c8c9371db73ab622494b5d20
