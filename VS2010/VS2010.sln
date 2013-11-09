@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Library", "Library\Library.vcxproj", "{39C3092E-D8A4-487A-AC1B-1D0F9FEA4AAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSClient", "CSClient\CSClient.csproj", "{38F749CE-2F70-46AA-A2D1-7CE5BED59681}"
+	ProjectSection(ProjectDependencies) = postProject
+		{39C3092E-D8A4-487A-AC1B-1D0F9FEA4AAF} = {39C3092E-D8A4-487A-AC1B-1D0F9FEA4AAF}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
