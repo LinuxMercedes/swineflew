@@ -13,17 +13,14 @@ namespace CSClient
             foreach (Mission m in missions)
             {
                 BitArray target = m.target();
-                if (!target.Equals(BitBoard.empty))
+                switch (m.missionType)
                 {
-                    switch (m.missionType)
-                    {
-                        case Mission.missionTypes.goTo:
-                            missionGoTo(m.agent, target, m.walkThroughWater);
-                            break;
-                        case Mission.missionTypes.attackAdjacent:
-                            missionAttackAdjacent(m.agent);
-                            break;
-                    }
+                    case Mission.missionTypes.goTo:
+                        missionGoTo(m.agent, target, m.walkThroughWater);
+                        break;
+                    case Mission.missionTypes.attackAdjacent:
+                        missionAttackAdjacent(m.agent);
+                        break;
                 }
             }
         }
@@ -33,7 +30,7 @@ namespace CSClient
         //from the target bit board
         private static void missionGoTo(Unit u, BitArray b, bool walkThroughWater)
         {
-            if (u.MovementLeft == 0)
+            if (u.MovementLeft == 0 || b.Equals(BitBoard.empty))
             {
                 return;
             }
