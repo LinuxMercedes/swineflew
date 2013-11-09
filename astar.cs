@@ -1,18 +1,76 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+
+class Node : IEquatable<Node>, IComparable<Node>
+{
+	public int f{get;set;}
+	public int g{get;set;}
+	public int h{get;set;}
+
+	public Node parent{get;set;}
+
+	public int x{get;set;}
+	public int y{get;set;}
+
+	public Node(int xv, int yv, Node p = null)
+	{
+		x = xv;
+		y = yv;
+		parent = p;
+		if(p != null)
+		{
+			g = p.g + 1;
+		}
+	}
+
+	int IComparable<Node>.CompareTo(Node o)
+	{
+		if(f == o.f) return 0;
+		if(f < o.f) return -1;
+		return 1;
+	}
+
+	public override bool Equals( Object obj )
+	{
+		var other = obj as Node;
+		if( other == null ) return false;
+
+		return Equals (other);
+	}
+
+	public override int GetHashCode()
+	{
+		return 1000 * (int) x + (int) y;
+	}
+
+	public bool Equals( Node other )
+	{
+		if( other == null )
+		{
+			return false;
+		}
+
+		if( ReferenceEquals (this, other) )
+		{
+			return true;
+		}
+
+		return x == other.x && y == other.y;
+	}
+}
 
 class AStar
 {
-	// HEY THIS IS THE ROUTING FUNCTION
-	static public List<Node> route(uint x_start, uint y_start, BitBoard b, bool avoidWater = true)
+	static public List<Node> route(int x_start, int y_start, BitArray b, bool avoidWater = true)
 	{
 		List<Node> open = new List<Node>();
 		HashSet<Node> closed = new HashSet<Node>();
 		
-		Node start = Node(x_start, y_start);
+		Node start = new Node(x_start, y_start);
 		start.g = 0;
-		start.h = heuristic(start, Bb);
-		start.f = g + h;
+		start.h = heuristic(start, b);
+		start.f = start.g + start.h;
 		open.Add(start);
 
 		while(open.Count > 0 && !isDestination(open[0], b))
@@ -39,29 +97,31 @@ class AStar
 		if(open.Count > 0)
 		{
 			path.Add(open[0]);
-			while(path[-1].p != null)
+			while(path[-1].parent != null)
 			{
-				path.Add(path[-1].p);
+				path.Add(path[-1].parent);
 			}
 		}
-		return path.Reverse();
+		path.Reverse();
+
+		return path;
 	}
 	
-	public static bool isDestination(Node n, BitArray b, BitBoard bb)
+	public static bool isDestination(Node n, BitArray b)
 	{
-		return getBb(n.x, n.y, b, bb);
+		return getBb(n.x, n.y, b);
 	}
 
-	public static uint heuristic(Node n, BitArray b, BitBoard bb)
+	public static int heuristic(Node n, BitArray b)
 	{
-		uint h = bb.width + bb.height + 1; //Max distance
-		for(uint x = 0; x < bb.width; x++)
+		int h = BitBoard.width + BitBoard.height + 1; //Max distance
+		for(int x = 0; x < BitBoard.width; x++)
 		{
-			for(uint y = 0; y < bb.height; y++)
+			for(int y = 0; y < BitBoard.height; y++)
 			{
-				if(getBb(x, y, b, bb))
+				if(getBb(x, y, b))
 				{
-					uint d = Abs(x - n.x) + Abs(y - n.y);
+					int d = Math.Abs(x - n.x) + Math.Abs(y - n.y);
 					if(d < h) h = d;
 				}
 			}
@@ -69,46 +129,46 @@ class AStar
 		return h;
 	}
 
-	public static List<Node> genMoves(Node n, BitBoard bb, bool avoidWater)
+	public static List<Node> genMoves(Node n, BitArray b, bool avoidWater)
 	{
 		List<Node> moves = new List<Node>();
-		List<Tuple<uint, uint>> vals = new List<Tuple<uint, uint>>();
+		List<Tuple<int, int>> vals = new List<Tuple<int, int>>();
 		vals.Add(Tuple.Create(0, -1));
 		vals.Add(Tuple.Create(0, 1));
 		vals.Add(Tuple.Create(-1, 0));
 		vals.Add(Tuple.Create(1, 0));
 
-		foreach(Tuple<uint, uint> val in vals)
+		foreach(Tuple<int, int> val in vals)
 		{
-			uint x = val.Item1 + n.x;
-			uint y = val.Item2 + n.y;
+			int x = val.Item1 + n.x;
+			int y = val.Item2 + n.y;
 	
 			// Validate coords
-			if (x > b.width) continue;
-			if (y > b.height) continue;
+			if (x > BitBoard.width) continue;
+			if (y > BitBoard.height) continue;
 			if (x < 0) continue;
 			if (y < 0) continue;
 
 			// See if we can move to that location
 			// other units
-			if (getBb(x, y, b.myWorkers.And(b.myScouts).And(b.myTanks), b)) continue;
-			if (getBb(x, y, b.oppWorkers.And(b.oppScouts).And(b.oppTanks), b)) continue;
+			if (getBb(x, y, BitBoard.myWorkers.And(BitBoard.myScouts).And(BitBoard.myTanks))) continue;
+			if (getBb(x, y, BitBoard.oppWorkers.And(BitBoard.oppScouts).And(BitBoard.oppTanks))) continue;
 
 			// ice caps
-			if (getBb(x, y, b.iceCaps, b)) continue;
+			if (getBb(x, y, BitBoard.iceCaps)) continue;
 
 			// enemy spawn bases
-			if (getBb(x, y, b.oppSpawnBases, b)) continue;
+			if (getBb(x, y, BitBoard.oppSpawnBases)) continue;
 
 			// spawning tiles
 			// TODO
-			if (getBb(x, y, b.FUCK, b)) continue;
+			if (getBb(x, y, BitBoard.mySpawningSquares)) continue;
 
 			// water, if so chosen
-			if (avoidWater && getBb(x, y, b.waterTiles, b)) continue;
+			if (avoidWater && getBb(x, y, BitBoard.waterTiles)) continue;
 
 			// Woop, we have a valid move
-			Node move = Node(x, y, n);
+			Node move = new Node(x, y, n);
 			move.h = heuristic(n, b);
 			move.f = move.h + move.g;
 			moves.Add(move);
@@ -117,65 +177,9 @@ class AStar
 		return moves;
 	}
 
-	public static bool getBb(uint x, uint y, BitArray b, BitBoard bb)
+	public static bool getBb(int x, int y, BitArray b)
 	{
-		return bb.getVal(x, y, b);
+		return BitBoard.GetBit(b, x, y);
 	}
 }
-class Node : IEquatable<Node>, IComparable<Node>
-{
-	public uint f{get;set;}
-	public uint g{get;set;}
-	public uint h{get;set;}
 
-	public Node parent{get;set;}
-
-	public uint x{get;set;}
-	public uint y{get;set;}
-
-	public Node(uint xv, uint yv, Node p = null)
-	{
-		x = xv;
-		y = yv;
-		parent = p;
-		if(p != null)
-		{
-			g = p.g + 1;
-		}
-	}
-
-	public override int CompareTo(Node o)
-	{
-		if(f == o.f) return 0;
-		if(f < o.f) return -1;
-		return 1;
-	}
-
-	public override bool Equals( Object obj )
-	{
-		var other = obj as Node;
-		if( other == null ) return false;
-
-		return Equals (other);
-	}
-
-	public override int GetHashCode()
-	{
-		return 1000 * x + y;
-	}
-
-	public bool Equals( Node other )
-	{
-		if( other == null )
-		{
-			return false;
-		}
-
-		if( ReferenceEquals (this, other) )
-		{
-			return true;
-		}
-
-		return x == other.x && y == other.y;
-	}
-}
