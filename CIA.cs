@@ -13,9 +13,17 @@ namespace CSClient
             {
                 switch (m.missionType)
                 {
-                    case 
+                    case Mission.missionTypes.goTo:
+                        missionGoTo(m);
+                        break;
                 }
             }
+        }
+
+        //nathan implement the following
+        private static void missionGoTo(Mission m)
+        {
+
         }
     }
 }
