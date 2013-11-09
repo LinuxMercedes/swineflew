@@ -1,6 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
 
+// TEST CLIENT
+// r99ACM.device.mst.edu
+
 public class Program
 {
   public static void Main(string[] args)
