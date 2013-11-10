@@ -28,7 +28,9 @@ class AI : BaseAI
     /// <returns>True to end your turn. False to ask the server for updated information.</returns>
     public override bool run()
     {
+				Console.WriteLine("starting turn");
         ourRun();
+				Console.WriteLine("ending turn");
         return true;
     }
 
@@ -220,11 +222,11 @@ class AI : BaseAI
                     if (u.X == xSpawn[0] && u.Y == ySpawn[0])
                     {
                         defenders.Add(u.Id);
-                        xSpawn.RemoveAt(0);
-                        ySpawn.RemoveAt(0);
                         break;
                     }
             }
+                        xSpawn.RemoveAt(0);
+                        ySpawn.RemoveAt(0);
         }
 
         System.Console.WriteLine("Turn number " + turnNumber());
@@ -334,7 +336,8 @@ class AI : BaseAI
             {
                 if (defenders.Contains(u.Id))
                 {
-                    missions.Add(new Mission(u, () => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y), Mission.missionTypes.defendAndTrench));
+                    missions.Add(new Mission(u, /*() => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y)*/
+													() => BitBoard.myConnectedPumpStations, Mission.missionTypes.defendAndTrench));
                     //missions.Add(new Mission(u,
                     //    () => BitBoard.GetPumpStation(new BitArray(BitBoard.length, false).Or(BitBoard.myConnectedPumpStations).Or(BitBoard.oppConnectedPumpStations),
                     //    u.X, u.Y), Mission.missionTypes.defendPumpStation));
