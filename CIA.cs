@@ -18,8 +18,8 @@ namespace CSClient
                     case Mission.missionTypes.goTo:
                         missionGoTo(m.agent, target, m.walkThroughWater);
                         break;
-                    case Mission.missionTypes.attackAdjacent:
-                        missionAttackAdjacent(m.agent);
+                    case Mission.missionTypes.attackInRange:
+                        missionAttackInRange(m.agent);
                         break;
                 }
             }
@@ -60,21 +60,14 @@ namespace CSClient
 						BitBoard.Update();
         }
 
-        private static void missionAttackAdjacent(Unit u)
+        private static void missionAttackInRange(Unit u)
         {
             if (!u.HasAttacked)
                 foreach (Unit unit in AI.units)
                 {
-										if (unit.Owner == u.Owner) continue;
-                    if (u.X == unit.X && (u.Y - 1 == unit.Y || u.Y + 1 == unit.Y))
+                    if (u.Range >= Misc.ManhattanDistance(u, unit))
                     {
                         u.attack(unit);
-                        break;
-                    }
-                    else if (u.Y == unit.Y && (u.X - 1 == unit.X || u.X + 1 == unit.X))
-                    {
-                        u.attack(unit);
-                        break;
                     }
                 }
             BitBoard.Update();
