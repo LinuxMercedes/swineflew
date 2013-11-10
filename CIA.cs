@@ -34,6 +34,9 @@ namespace CSClient
                     case Mission.missionTypes.defendPumpStation:
                         //todo: implement
                         break;
+										case Mission.missionTypes.buildTrench:
+												missionBuildTrench(m.agent, target);
+												break;
                 }
             }
         }
@@ -140,5 +143,39 @@ namespace CSClient
 
             BitBoard.UpdateAll(); // May cause water to change
         }
+
+				private static void missionBuildTrench(Unit u, BitArray target)
+				{
+					List<Tile> glaciers = new List<Tile>();
+					foreach(Tile t in tiles)
+					{
+						if (t.WaterAmount > 1)
+						{
+							glaciers.Add(t);
+						}
+					}
+
+					List<Node> path = null;
+					foreach(Tile g in glaciers)
+					{
+						List<Node> p = AStar.route(g.X, g.Y, target);
+						if(path == null)
+						{
+							path = p;
+						}
+						else if(p.Count < path.Count)
+						{
+							path = p;
+						}
+					}
+
+					if(path == null) return;
+
+					//have chosen a 
+
+
+
+					BitBoard.UpdateAll();
+				}
     }
 }
