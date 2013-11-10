@@ -484,11 +484,26 @@ class BitBoard
         BitArray invalidTiles = new BitArray(length, false).Or(waterTiles).Or(trenchTiles).Or(iceCaps).Xor(full);
         List<Node> path = AStar.route(start / height, start % height, iceCaps, false, invalidTiles);
 
-        // if a path exists, add current pump station to connected pump stations bitboard, go to next pump station
+        // if a path exists and ice cap is still producing, add current pump station to connected pump stations bitboard, go to next pump station
         if (path.Count != 0)
         {
-          connectedPumpStations.Or(currentPumpStation);
-          break;
+          bool validConnected = true;
+          foreach (Tile tile in BaseAI.tiles)
+          {
+            if (tile.X == path[path.Count - 1].x && tile.Y == path[path.Count - 1].y)
+            {
+              if (tile.WaterAmount <= 1)
+              {
+                validConnected = false;
+              }
+              break;
+            }
+          }
+          if (validConnected)
+          {
+            connectedPumpStations.Or(currentPumpStation);
+            break;
+          }
         }
       }
 
@@ -499,10 +514,16 @@ class BitBoard
     return connectedPumpStations;
   }
 
+  // returns the adjacency bitboard (excluding diagonals) for a specified bitboard
+  public static BitArray GetNonDiagonalAdjacency(BitArray bitboard)
+  {
+    return new BitArray(bitboard).Or(ShiftLeft(bitboard, 1).And(validLeft)).Or(ShiftRight(bitboard, 1).And(validRight)).Or(ShiftLeft(bitboard, height)).Or(ShiftRight(bitboard, height));
+  }
+
   // returns the adjacency bitboard for a specified bitboard
   public static BitArray GetAdjacency(BitArray bitboard)
   {
-    BitArray adjacency = new BitArray(bitboard.Length, false).Or(bitboard).Or(ShiftLeft(bitboard, 1).And(validLeft)).Or(ShiftRight(bitboard, 1).And(validRight));
+    BitArray adjacency = new BitArray(bitboard).Or(ShiftLeft(bitboard, 1).And(validLeft)).Or(ShiftRight(bitboard, 1).And(validRight));
     return adjacency.Or(ShiftLeft(adjacency, height)).Or(ShiftRight(adjacency, height)).Xor(bitboard);
   }
 

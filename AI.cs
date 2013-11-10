@@ -216,7 +216,7 @@ class AI : BaseAI
         {
             foreach (Unit u in units)
             {
-                if(u.Owner == playerID())
+                if (u.Owner == playerID())
                     if (u.X == xSpawn[0] && u.Y == ySpawn[0])
                     {
                         defenders.Add(u.Id);
@@ -303,6 +303,18 @@ class AI : BaseAI
                 if (t.Owner != playerID()) continue;
                 if (t.PumpID == -1) continue;
                 if (pumpid.Contains(t.PumpID)) continue;
+                if (t.IsSpawning) continue;
+                bool temp = false;
+                foreach (Unit u in units)
+                {
+                    if (u.X == t.X && u.Y == t.Y)
+                    {
+                        temp = true;
+                        break;
+                    }
+                }
+                if (temp) continue;
+
 
                 pumpid.Add(t.PumpID);
                 t.spawn((int)Types.Worker);
@@ -323,8 +335,9 @@ class AI : BaseAI
                 if (defenders.Contains(u.Id))
                 {
                     missions.Add(new Mission(u, () => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y), Mission.missionTypes.defendAndTrench));
-                    //missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
-                    //missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
+                    //missions.Add(new Mission(u,
+                    //    () => BitBoard.GetPumpStation(new BitArray(BitBoard.length, false).Or(BitBoard.myConnectedPumpStations).Or(BitBoard.oppConnectedPumpStations),
+                    //    u.X, u.Y), Mission.missionTypes.defendPumpStation));
                 }
                 else if (u.Type == (int)Types.Scout)
                 {

@@ -31,6 +31,9 @@ namespace CSClient
                         missionTrenchAroundTarget(m.agent, target);
                         missionAttackInRange(m.agent);
                         break;
+                    case Mission.missionTypes.defendPumpStation:
+                        //todo: implement
+                        break;
                 }
             }
         }

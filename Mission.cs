@@ -8,7 +8,7 @@ namespace CSClient
 {
     class Mission
     {
-        public enum missionTypes { goTo, attackInRange, goAttack , defendAndTrench };
+        public enum missionTypes { goTo, attackInRange, goAttack , defendAndTrench, defendPumpStation };
         public Unit agent;
         public Func<BitArray> target;
         public missionTypes missionType;
