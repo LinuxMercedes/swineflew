@@ -101,15 +101,6 @@ namespace CSClient
             {
 								bool stop = false;
                 if (u.MovementLeft == 0) break;
-
-                // Try to move
-                // if you fail to move, 
-                // curl up in a ball and cry
-                if (!u.move(n.x, n.y))
-                {
-                    System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y + "!!!");
-                    break;
-                }
 								//Try to stop once we are close enough to attack
 								foreach (Unit unit in AI.units)
                 {
@@ -124,6 +115,16 @@ namespace CSClient
                 }
 
 								if(stop) break;
+
+                // Try to move
+                // if you fail to move, 
+                // curl up in a ball and cry
+                if (!u.move(n.x, n.y))
+                {
+                    System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y + "!!!");
+                    break;
+                }
+
             }
             BitBoard.UpdateUnits();
         }
