@@ -86,6 +86,8 @@ class AStar
 				if(getBb(x, y, b))
 				{
 					int d = Math.Abs(x - n.x) + Math.Abs(y - n.y);
+					if(getBb(x, y, BitBoard.waterTiles)) //Penalize water a little bit
+						d++;
 					if(d < h) h = d;
 				}
 			}
