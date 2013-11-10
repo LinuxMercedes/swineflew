@@ -300,11 +300,19 @@ class AI : BaseAI
             {
                 if (defenders.Contains(u.Id))
                 {
-                    //defend code
+                    missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
+                    missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
                 }
                 else if (u.Type == (int)Types.Scout)
                 {
-                    missions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo));
+                    if (!BitBoard.oppConnectedPumpStations.Equals(BitBoard.empty))
+                    {
+                        missions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo));
+                    }
+                    else
+                    {
+                        missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
+                    }
                 }
                 missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
             }
