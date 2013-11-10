@@ -222,9 +222,11 @@ class AI : BaseAI
                         defenders.Add(u.Id);
                         xSpawn.RemoveAt(0);
                         ySpawn.RemoveAt(0);
+                        break;
                     }
             }
         }
+
         System.Console.WriteLine("Turn number " + turnNumber());
         BitBoard.UpdateAll();
         betterSpawn();
