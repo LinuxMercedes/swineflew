@@ -249,7 +249,7 @@ class AI : BaseAI
             for (int i = 0; i < tiles.Length; i++)
                 innerloop(i);
         else
-            for (int i = tiles.Length - 1; i <= 0; i--)
+            for (int i = tiles.Length - 1; i >= 0; i--)
                 innerloop(i);
     }
 
