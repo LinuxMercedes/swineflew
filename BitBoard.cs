@@ -171,21 +171,21 @@ class BitBoard
           }
           break;
         case (int)AI.Types.Scout:
-          if (unit.Owner == myID) // my worker
+          if (unit.Owner == myID) // my scout
           {
             SetBit(myScouts, unit.X, unit.Y, true);
           }
-          else if (unit.Owner == oppID) // opp worker
+          else if (unit.Owner == oppID) // opp scout
           {
             SetBit(oppScouts, unit.X, unit.Y, true);
           }
           break;
         case (int)AI.Types.Tank:
-          if (unit.Owner == myID) // my worker
+          if (unit.Owner == myID) // my tank
           {
             SetBit(myTanks, unit.X, unit.Y, true);
           }
-          else if (unit.Owner == oppID) // opp worker
+          else if (unit.Owner == oppID) // opp tank
           {
             SetBit(oppTanks, unit.X, unit.Y, true);
           }
@@ -294,21 +294,21 @@ class BitBoard
           }
           break;
         case (int)AI.Types.Scout:
-          if (unit.Owner == myID) // my worker
+          if (unit.Owner == myID) // my scout
           {
             SetBit(myScouts, unit.X, unit.Y, true);
           }
-          else if (unit.Owner == oppID) // opp worker
+          else if (unit.Owner == oppID) // opp scout
           {
             SetBit(oppScouts, unit.X, unit.Y, true);
           }
           break;
         case (int)AI.Types.Tank:
-          if (unit.Owner == myID) // my worker
+          if (unit.Owner == myID) // my tank
           {
             SetBit(myTanks, unit.X, unit.Y, true);
           }
-          else if (unit.Owner == oppID) // opp worker
+          else if (unit.Owner == oppID) // opp tank
           {
             SetBit(oppTanks, unit.X, unit.Y, true);
           }
@@ -351,7 +351,7 @@ class BitBoard
     {
       if (bitboard.Get(i))
       {
-        Console.WriteLine((i / height) + " " + (i % height));
+        Console.WriteLine(bitboard.Get(i) + ": " + (i / height) + " " + (i % height));
       }
     }
   }
