@@ -18,6 +18,10 @@ class BitBoard
   // constant bitboards
   public static BitArray empty;
   public static BitArray full;
+  public static BitArray topEdge;
+  public static BitArray bottomEdge;
+  public static BitArray validLeft;
+  public static BitArray validRight;
   public static BitArray[][] position;
 
   // team-specific occupancy bitboards
@@ -74,6 +78,15 @@ class BitBoard
     // initialize constant bitboards
     empty = new BitArray(length, false);
     full = new BitArray(length, true);
+    topEdge = new BitArray(length, false);
+    bottomEdge = new BitArray(length, false);
+    for (int i = 0; i < width; i++)
+    {
+      topEdge.Set((i * height), true);
+      bottomEdge.Set((i * height) + (height - 1), true);
+    }
+    validLeft = new BitArray(length, false).Or(bottomEdge).Xor(full);
+    validRight = new BitArray(length, false).Or(topEdge).Xor(full);
 
     position = new BitArray[width][];
     for (int i = 0; i < width; i++)
@@ -444,6 +457,7 @@ class BitBoard
 
     // get connected pump stations
     BitArray connectedPumpStations = new BitArray(length, false);
+    BitArray waterAndTrenchTiles = new BitArray(length, false).Or(waterTiles).Or(trenchTiles);
     List<int> pumpStationIndeces = GetIndeces(pumpStations);
     foreach (int index in pumpStationIndeces)
     {
@@ -454,25 +468,20 @@ class BitBoard
         continue;
       }
 
-      // get starting points from current pump station's adjacency bitboard
-      BitArray currentAdjacency = GetAdjacency(currentPumpStation).And(waterTiles);
+      // get starting points from current pump station's adjacency bitboard      
+      BitArray currentAdjacency = GetAdjacency(currentPumpStation).And(waterAndTrenchTiles);
       if (Equal(currentAdjacency, empty))
       {
         // remove current pump station from pump stations bitboard, continue
         pumpStations.Xor(currentPumpStation);
         continue;
       }
-
-      // debug
-      Console.WriteLine("Current Adjacency:");
-      PrintBitBoard(currentAdjacency);
-
       List<int> startingPoints = GetIndeces(currentAdjacency);
 
       // get path from starting points to nearest connected glacier
       foreach (int start in startingPoints)
       {
-        BitArray invalidTiles = new BitArray(length, false).Or(waterTiles).Or(iceCaps).Xor(full);
+        BitArray invalidTiles = new BitArray(length, false).Or(waterTiles).Or(trenchTiles).Or(iceCaps).Xor(full);
         List<Node> path = AStar.route(start / height, start % height, iceCaps, false, invalidTiles);
 
         // if a path exists, add current pump station to connected pump stations bitboard, go to next pump station
@@ -493,8 +502,8 @@ class BitBoard
   // returns the adjacency bitboard for a specified bitboard
   public static BitArray GetAdjacency(BitArray bitboard)
   {
-    BitArray adjacency = new BitArray(bitboard.Length, false).Or(bitboard).Or(ShiftLeft(bitboard, 1)).Or(ShiftRight(bitboard, 1));
-    return adjacency.Or(ShiftLeft(adjacency, width)).Or(ShiftRight(adjacency, width)).Xor(bitboard);
+    BitArray adjacency = new BitArray(bitboard.Length, false).Or(bitboard).Or(ShiftLeft(bitboard, 1).And(validLeft)).Or(ShiftRight(bitboard, 1).And(validRight));
+    return adjacency.Or(ShiftLeft(adjacency, height)).Or(ShiftRight(adjacency, height)).Xor(bitboard);
   }
 
   // returns the bit array shifted a specified number of bits to the left
