@@ -57,6 +57,7 @@ namespace CSClient
             if (!u.HasAttacked)
                 foreach (Unit unit in AI.units)
                 {
+										if (unit.Owner == u.Owner) continue;
                     if (u.X == unit.X && (u.Y - 1 == unit.Y || u.Y + 1 == unit.Y))
                     {
                         u.attack(unit);
