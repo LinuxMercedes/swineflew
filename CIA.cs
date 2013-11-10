@@ -89,7 +89,7 @@ namespace CSClient
 						Tile minTile = null;
 						foreach (Tile tile in AI.tiles)
 						{
-							if(BitBoard.GetBit(adj, tile.X, tile.Y))
+							if(BitBoard.GetBit(adj, tile.X, tile.Y) && u.Range >= Misc.ManhattanDistance(u, tile))
 							{
 								if(minTile == null)
 								{
