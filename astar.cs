@@ -16,7 +16,8 @@ class AStar
 		start.f = start.g + start.h;
 		open.Add(start);
 
-		while(open.Count > 0 && !isDestination(open[0], b))
+		long iters = 0;
+		while(open.Count > 0 && !isDestination(open[0], b) && iters < 20000)
 		{
 			Node here = open[0];
 			open.RemoveAt(0);
@@ -35,6 +36,7 @@ class AStar
 			}
 
 			open.Sort();
+			iters++;
 		}
 		
 		// Path found, or none exists
