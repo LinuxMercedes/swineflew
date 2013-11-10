@@ -456,7 +456,7 @@ class BitBoard
       }
 
       // get starting points from current pump station's adjacency bitboard
-      BitArray currentAdjacency = GetAdjacency(currentPumpStation);
+      BitArray currentAdjacency = GetAdjacency(currentPumpStation).And(waterTiles);
       List<int> startingPoints = GetIndeces(currentAdjacency);
 
       // get path from starting points to nearest connected glacier
