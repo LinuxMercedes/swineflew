@@ -212,13 +212,9 @@ class AI : BaseAI
     {
 				System.Console.WriteLine("Turn number " + turnNumber());
 				BitBoard.UpdateAll();
-				System.Console.WriteLine("Past first update");
-        betterSpawn();
-				System.Console.WriteLine("Past spawn");
+				spawnUnits();
 				BitBoard.UpdateAll();
-				System.Console.WriteLine("Past second update");
         CIA.executeMissions(assignMissions());
-				System.Console.WriteLine("Past CIA");
     }
 
     public void spawnUnits()
@@ -282,7 +278,16 @@ class AI : BaseAI
 
     public void betterSpawn()
     {
-
+        if (turnNumber() <= 2)
+        {
+            foreach (PumpStation p in pumpStations)
+            {
+                if (p.Owner == playerID())
+                {
+                   
+                }
+            }
+        }
         spawnUnits();
     }
 
