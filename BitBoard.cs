@@ -208,7 +208,7 @@ class BitBoard
     myNonMotionTiles.Or(mySpawningSquares);
     myNonMotionTiles.Or(oppSpawnBases);
     myNonMotionTiles.Or(iceCaps);
-    myMotionTiles = myNonMotionTiles;
+    myMotionTiles = new BitArray(myNonMotionTiles);
     myMotionTiles.Xor(full);
     oppNonMotionTiles = new BitArray(length, false);
     oppNonMotionTiles.Or(oppOccupiedTiles);
@@ -216,7 +216,7 @@ class BitBoard
     oppNonMotionTiles.Or(oppSpawningSquares);
     oppNonMotionTiles.Or(mySpawnBases);
     oppNonMotionTiles.Or(iceCaps);
-    oppMotionTiles = oppNonMotionTiles;
+    oppMotionTiles = new BitArray(oppNonMotionTiles);
     oppMotionTiles.Xor(full);
   }
 
@@ -349,7 +349,7 @@ class BitBoard
     myNonMotionTiles.Or(mySpawningSquares);
     myNonMotionTiles.Or(oppSpawnBases);
     myNonMotionTiles.Or(iceCaps);
-    myMotionTiles = myNonMotionTiles;
+    myMotionTiles = new BitArray(myNonMotionTiles);
     myMotionTiles.Xor(full);
     oppNonMotionTiles = new BitArray(length, false);
     oppNonMotionTiles.Or(oppOccupiedTiles);
@@ -357,7 +357,7 @@ class BitBoard
     oppNonMotionTiles.Or(oppSpawningSquares);
     oppNonMotionTiles.Or(mySpawnBases);
     oppNonMotionTiles.Or(iceCaps);
-    oppMotionTiles = oppNonMotionTiles;
+    oppMotionTiles = new BitArray(oppNonMotionTiles);
     oppMotionTiles.Xor(full);
 
     // debug
