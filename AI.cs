@@ -245,7 +245,7 @@ class AI : BaseAI
         for (int i = 0; i < units.Length; i++)
             if (units[i].Owner == playerID())
                 numberOfUnits++;
-        for (int i = 0; i < tiles.Length; i++)
+        for (int i = 0; i < tiles.Length; i++)//todo: reverse loop if player 1 !!!!!!!!!!!!!!!
         {
             // If this tile is my spawn tile or my pump station...
             if (tiles[i].Owner == playerID())
@@ -283,19 +283,14 @@ class AI : BaseAI
                                 if (tiles[i].X == units[j].X && tiles[i].Y == units[j].Y)
                                     canSpawn = false;
                             bool defender = false;
-                            if (BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
-                                    (BitBoard.myConnectedPumpStations).Or
-                                    (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), tiles[i].X, tiles[i].Y)
-                                )
+                            if (turnNumber() > 1 && BitBoard.GetBit(BitBoard.myConnectedPumpStations, tiles[i].X, tiles[i].Y))
                             {
                                 defender = true;
                             }
                             foreach (Unit u in units)
                             {
                                 if (defenders.Contains(u.Id)
-                                    && BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
-                                    (BitBoard.myConnectedPumpStations).Or
-                                    (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), tiles[i].X, tiles[i].Y)
+                                    && BitBoard.GetBit(BitBoard.myConnectedPumpStations, tiles[i].X, tiles[i].Y)
                                     && BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
                                     (BitBoard.myConnectedPumpStations).Or
                                     (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), u.X, u.Y)
