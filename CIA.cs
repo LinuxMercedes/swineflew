@@ -25,6 +25,11 @@ namespace CSClient
                         missionGoTo(m.agent, target, m.walkThroughWater);
                         missionAttackInRange(m.agent);//todo actually implement goattack
                         break;
+										case Mission.missionTypes.defendAndTrench:
+												missionGoTo(m.agent, target, m.walkThroughWater);
+												missionAttackInRange(m.agent);
+												missionTrenchAroundTarget(m.agent, target);
+												break;
                 }
             }
         }
