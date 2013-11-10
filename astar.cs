@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 class AStar
 {
+	static int maxIters = 800;
+
 	static public List<Node> route(int x_start, int y_start, BitArray b, bool avoidWater = true, BitArray invalidTiles = null)
 	{
 		if(invalidTiles == null) 
@@ -22,7 +24,7 @@ class AStar
 		open.Add(start);
 
 		long iters = 0;
-		while(open.Count > 0 && !isDestination(open[0], b) && iters < 1000)
+		while(open.Count > 0 && !isDestination(open[0], b) && iters < maxIters)
 		{
 			Node here = open[0];
 			open.RemoveAt(0);
@@ -44,7 +46,7 @@ class AStar
 			iters++;
 		}
 
-		if(iters > 1000) 
+		if(iters > maxIters) 
 		{
 			System.Console.WriteLine("A* Timed Out moving from " + x_start + " " + y_start + " to ");
 			BitBoard.PrintBitBoard(b);
