@@ -49,6 +49,9 @@ class AStar
 				path.Add(path[path.Count - 1].parent);
 			}
 		}
+
+		path.RemoveAt(path.Count - 1); // Remove start node?
+
 		path.Reverse();
 
 		return path;
@@ -92,11 +95,12 @@ class AStar
 			int y = val.Item2 + n.y;
 	
 			// Validate coords
-			if (x > BitBoard.width) continue;
-			if (y > BitBoard.height) continue;
+			if (x >= BitBoard.width) continue;
+			if (y >= BitBoard.height) continue;
 			if (x < 0) continue;
 			if (y < 0) continue;
 
+			//System.Console.WriteLine("Considering " + x + " " + y);
 			// See if we can move to that location
 			if (getBb(x, y, BitBoard.myNonMotionTiles))
 			{
@@ -120,7 +124,6 @@ class AStar
 			Node move = new Node(x, y, n);
 			move.h = heuristic(n, b);
 			move.f = move.h + move.g;
-			//System.Console.WriteLine("Adding " + x + " " + y + " f: " + move.f);
 			moves.Add(move);
 		}
 
