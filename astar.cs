@@ -4,8 +4,13 @@ using System.Collections.Generic;
 
 class AStar
 {
-	static public List<Node> route(int x_start, int y_start, BitArray b, bool avoidWater = true)
+	static public List<Node> route(int x_start, int y_start, BitArray b, bool avoidWater = true, BitArray invalidTiles = null)
 	{
+		if(invalidTiles == null) 
+		{
+			invalidTiles = BitBoard.myNonMotionTiles;
+		}
+
 		List<Node> open = new List<Node>();
 		HashSet<Node> closed = new HashSet<Node>();
 		
@@ -25,7 +30,7 @@ class AStar
 
 			//System.Console.WriteLine("Here: " + here.x + " " + here.y + " f: " + here.f);
 
-			List<Node> moves = genMoves(here, b, avoidWater);
+			List<Node> moves = genMoves(here, b, avoidWater, invalidTiles);
 
 			foreach(Node move in moves)
 			{
@@ -87,7 +92,7 @@ class AStar
 		return h;
 	}
 
-	public static List<Node> genMoves(Node n, BitArray b, bool avoidWater)
+	public static List<Node> genMoves(Node n, BitArray b, bool avoidWater, BitArray invalidTiles)
 	{
 		List<Node> moves = new List<Node>();
 		List<Tuple<int, int>> vals = new List<Tuple<int, int>>();
@@ -109,7 +114,7 @@ class AStar
 
 			//System.Console.WriteLine("Considering " + x + " " + y);
 			// See if we can move to that location
-			if (getBb(x, y, BitBoard.myNonMotionTiles))
+			if (getBb(x, y, invalidTiles))
 			{
 				//System.Console.WriteLine("Cannot move to " + x + " " + y);
 				//System.Console.WriteLine(getBb(x, y, BitBoard.iceCaps));
