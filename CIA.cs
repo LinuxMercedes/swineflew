@@ -21,6 +21,10 @@ namespace CSClient
                     case Mission.missionTypes.attackInRange:
                         missionAttackInRange(m.agent);
                         break;
+                    case Mission.missionTypes.goAttack:
+                        missionGoTo(m.agent, target, m.walkThroughWater);
+                        missionAttackInRange(m.agent);//todo actually implement goattack
+                        break;
                 }
             }
         }
