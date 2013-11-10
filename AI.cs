@@ -208,12 +208,13 @@ class AI : BaseAI
     //our code =================================================
 
     public static bool gotClose;
-    public static List<Unit> defenders = new List<Unit>();
+    public static HashSet<int> defenders = new HashSet<int>();
     public static List<int> xSpawn = new List<int>();
     public static List<int> ySpawn = new List<int>();
 
     public void ourRun()
     {
+        
         while (xSpawn.Count > 0)
         {
             foreach (Unit u in units)
@@ -221,7 +222,7 @@ class AI : BaseAI
                 if (u.Owner == playerID())
                     if (u.X == xSpawn[0] && u.Y == ySpawn[0])
                     {
-                        defenders.Add(u);
+                        defenders.Add(u.Id);
                         break;
                     }
             }
@@ -282,9 +283,10 @@ class AI : BaseAI
                                 if (tiles[i].X == units[j].X && tiles[i].Y == units[j].Y)
                                     canSpawn = false;
 
-                            foreach (Unit u in defenders)
+                            foreach (Unit u in units)
                             {
-                                if (BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
+                                if (defenders.Contains(u.Id)
+                                    && BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
                                     (BitBoard.myConnectedPumpStations).Or
                                     (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), tiles[i].X, tiles[i].Y)
                                     && BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
@@ -359,7 +361,7 @@ class AI : BaseAI
         {
             if (u.Owner == playerID())
             {
-                if (defenders.Contains(u))
+                if (defenders.Contains(u.Id))
                 {
                     missions.Add(new Mission(u, /*() => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y)*/
 													() => BitBoard.myConnectedPumpStations, Mission.missionTypes.defendAndTrench));
