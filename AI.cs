@@ -28,9 +28,9 @@ class AI : BaseAI
     /// <returns>True to end your turn. False to ask the server for updated information.</returns>
     public override bool run()
     {
-				Console.WriteLine("starting turn");
+        Console.WriteLine("starting turn");
         ourRun();
-				Console.WriteLine("ending turn");
+        Console.WriteLine("ending turn");
         return true;
     }
 
@@ -214,7 +214,7 @@ class AI : BaseAI
 
     public void ourRun()
     {
-        
+
         while (xSpawn.Count > 0)
         {
             foreach (Unit u in units)
@@ -226,8 +226,8 @@ class AI : BaseAI
                         break;
                     }
             }
-                        xSpawn.RemoveAt(0);
-                        ySpawn.RemoveAt(0);
+            xSpawn.RemoveAt(0);
+            ySpawn.RemoveAt(0);
         }
 
         System.Console.WriteLine("Turn number " + turnNumber());
@@ -282,7 +282,14 @@ class AI : BaseAI
                             for (int j = 0; j < units.Length; j++)
                                 if (tiles[i].X == units[j].X && tiles[i].Y == units[j].Y)
                                     canSpawn = false;
-
+                            bool defender = false;
+                            if (BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
+                                    (BitBoard.myConnectedPumpStations).Or
+                                    (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), tiles[i].X, tiles[i].Y)
+                                )
+                            {
+                                defender = true;
+                            }
                             foreach (Unit u in units)
                             {
                                 if (defenders.Contains(u.Id)
@@ -301,6 +308,12 @@ class AI : BaseAI
                             // If possible, spawn!
                             if (canSpawn)
                             {
+                                if (defender)
+                                {
+                                    tiles[i].spawn((int)Types.Worker);
+                                    xSpawn.Add(tiles[i].X);
+                                    ySpawn.Add(tiles[i].Y);
+                                }
                                 tiles[i].spawn((int)Types.Scout);
                                 numberOfUnits++;
                             }
@@ -356,15 +369,18 @@ class AI : BaseAI
 
     public List<Mission> assignMissions()
     {
-        List<Mission> missions = new List<Mission>();
+        List<Mission> offensivemissions = new List<Mission>();
+        List<Mission> defensivemissions = new List<Mission>();
+        List<Mission> attackmissions = new List<Mission>();
+
         foreach (Unit u in units)
         {
             if (u.Owner == playerID())
             {
                 if (defenders.Contains(u.Id))
                 {
-                    missions.Add(new Mission(u, /*() => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y)*/
-													() => BitBoard.myConnectedPumpStations, Mission.missionTypes.defendAndTrench));
+                    defensivemissions.Add(new Mission(u, /*() => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y)*/
+                                                    () => BitBoard.myConnectedPumpStations, Mission.missionTypes.defendAndTrench));
                     //missions.Add(new Mission(u,
                     //    () => BitBoard.GetPumpStation(new BitArray(BitBoard.length, false).Or(BitBoard.myConnectedPumpStations).Or(BitBoard.oppConnectedPumpStations),
                     //    u.X, u.Y), Mission.missionTypes.defendPumpStation));
@@ -373,17 +389,19 @@ class AI : BaseAI
                 {
                     if (!BitBoard.Equal(BitBoard.oppConnectedPumpStations, BitBoard.empty))
                     {
-                        missions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo));
-                        missions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo,true));
+                        offensivemissions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo));
+                        offensivemissions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo, true));
                     }
                     else
                     {
-                        missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
+                        offensivemissions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
                     }
                 }
-                missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
+                attackmissions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
             }
         }
-        return missions;
+        offensivemissions.AddRange(defensivemissions);
+        offensivemissions.AddRange(attackmissions);
+        return offensivemissions;
     }
 }
