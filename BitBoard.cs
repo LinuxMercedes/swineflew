@@ -343,4 +343,16 @@ class BitBoard
   {
     return bitboard.Get((x * height) + y);
   }
+
+  // prints the coordinates of the high bits in the specified bitboard
+  public static void PrintBitBoard(BitArray bitboard)
+  {
+    for (int i = 0; i < bitboard.Length; i++)
+    {
+      if (bitboard.Get(i))
+      {
+        Console.WriteLine((i / height) + " " + (i % height));
+      }
+    }
+  }
 }
