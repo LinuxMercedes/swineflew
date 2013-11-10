@@ -223,12 +223,6 @@ class BitBoard
     trenchTiles.SetAll(false);
     dirtTiles.SetAll(false);
     iceCaps.SetAll(false);
-    myOccupiedTiles.SetAll(false);
-    oppOccupiedTiles.SetAll(false);
-    myNonMotionTiles.SetAll(false);
-    myMotionTiles.SetAll(false);
-    oppNonMotionTiles.SetAll(false);
-    oppMotionTiles.SetAll(false);
   }
 
   // clears the data in the unit bitboards
@@ -237,9 +231,13 @@ class BitBoard
     myWorkers.SetAll(false);
     myScouts.SetAll(false);
     myTanks.SetAll(false);
+    myOccupiedTiles.SetAll(false);    
     oppWorkers.SetAll(false);
     oppScouts.SetAll(false);
     oppTanks.SetAll(false);
+    oppOccupiedTiles.SetAll(false);
+    myNonMotionTiles.SetAll(false);
+    myMotionTiles.SetAll(false);
   }
 
   // populates the data in all bitboards for the current game state
@@ -296,14 +294,6 @@ class BitBoard
 
     PopulateUnits();
 
-    // populate generic bitboards
-    myOccupiedTiles = new BitArray(length, false).Or(myWorkers).Or(myScouts).Or(myTanks);
-    oppOccupiedTiles = new BitArray(length, false).Or(oppWorkers).Or(oppScouts).Or(oppTanks);
-    myNonMotionTiles = new BitArray(length, false).Or(myOccupiedTiles).Or(oppOccupiedTiles).Or(mySpawningSquares).Or(oppSpawnBases).Or(iceCaps);
-    myMotionTiles = new BitArray(myNonMotionTiles).Xor(full);
-    oppNonMotionTiles = new BitArray(length, false).Or(oppOccupiedTiles).Or(myOccupiedTiles).Or(oppSpawningSquares).Or(mySpawnBases).Or(iceCaps);
-    oppMotionTiles = new BitArray(oppNonMotionTiles).Xor(full);
-
     // populate special bitboards
     myConnectedPumpStations = GetConnectedPumpStations(myID);
     oppConnectedPumpStations = GetConnectedPumpStations(oppID);
@@ -312,6 +302,7 @@ class BitBoard
   // populates data in the unit bitboards for the current game state
   public static void PopulateUnits()
   {
+    // populate individual unit bitboards
     foreach (Unit unit in BaseAI.units)
     {
       switch (unit.Type)
@@ -348,6 +339,14 @@ class BitBoard
           break;
       }
     }
+
+    // populate dependent generic bitboards
+    myOccupiedTiles = new BitArray(length, false).Or(myWorkers).Or(myScouts).Or(myTanks);
+    oppOccupiedTiles = new BitArray(length, false).Or(oppWorkers).Or(oppScouts).Or(oppTanks);
+    myNonMotionTiles = new BitArray(length, false).Or(myOccupiedTiles).Or(oppOccupiedTiles).Or(mySpawningSquares).Or(oppSpawnBases).Or(iceCaps);
+    myMotionTiles = new BitArray(myNonMotionTiles).Xor(full);
+    oppNonMotionTiles = new BitArray(length, false).Or(oppOccupiedTiles).Or(myOccupiedTiles).Or(oppSpawningSquares).Or(mySpawnBases).Or(iceCaps);
+    oppMotionTiles = new BitArray(oppNonMotionTiles).Xor(full);
   }
 
   // updates all non-constant bitboards
@@ -422,7 +421,7 @@ class BitBoard
     {
       pumpStation.Or(position[x][y + 1]);
     }
-    return pumpStation.And(myPumpStations);
+    return pumpStation.And(pumpStations);
   }
 
   // returns a bitboard of all connected pump stations for the specified player
@@ -466,7 +465,7 @@ class BitBoard
       // get path from starting points to nearest connected glacier
       foreach (int start in startingPoints)
       {
-        BitArray invalidTiles = new BitArray(length, false).Or(waterTiles).Xor(full);
+        BitArray invalidTiles = new BitArray(length, false).Or(waterTiles).Or(iceCaps).Xor(full);
         List<Node> path = AStar.route(start / height, start % height, iceCaps, false, invalidTiles);
 
         // if a path exists, add current pump station to connected pump stations bitboard
