@@ -38,7 +38,7 @@ namespace CSClient
 						List<Node> path = AStar.route(u.X, u.Y, b, !walkThroughWater);
 						if(path.Count == 0)
 						{
-							System.Console.WriteLine("Wtfwlj;");
+							System.Console.WriteLine("No Path Found");
 						}
 						foreach(Node n in path)
 						{
