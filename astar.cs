@@ -16,7 +16,8 @@ class AStar
 		start.f = start.g + start.h;
 		open.Add(start);
 
-		while(open.Count > 0 && !isDestination(open[0], b))
+		long iters = 0;
+		while(open.Count > 0 && !isDestination(open[0], b) && iters < 20000)
 		{
 			Node here = open[0];
 			open.RemoveAt(0);
@@ -35,6 +36,7 @@ class AStar
 			}
 
 			open.Sort();
+			iters++;
 		}
 		
 		// Path found, or none exists
@@ -96,9 +98,18 @@ class AStar
 			if (y < 0) continue;
 
 			// See if we can move to that location
-			if (getBb(x, y, BitBoard.iceCaps.Or(BitBoard.mySpawnBases)) )
+			if (getBb(x, y, BitBoard.myNonMotionTiles))
 			{
 				System.Console.WriteLine("Cannot move to " + x + " " + y);
+				System.Console.WriteLine(getBb(x, y, BitBoard.iceCaps));
+				System.Console.WriteLine(getBb(x, y, BitBoard.myWorkers));
+				System.Console.WriteLine(getBb(x, y, BitBoard.myScouts));
+				System.Console.WriteLine(getBb(x, y, BitBoard.myTanks));
+				System.Console.WriteLine(getBb(x, y, BitBoard.mySpawningSquares));
+				System.Console.WriteLine(getBb(x, y, BitBoard.oppSpawnBases));
+				System.Console.WriteLine(getBb(x, y, BitBoard.oppWorkers));
+				System.Console.WriteLine(getBb(x, y, BitBoard.oppScouts));
+				System.Console.WriteLine(getBb(x, y, BitBoard.oppTanks));
 				continue;
 			}
 

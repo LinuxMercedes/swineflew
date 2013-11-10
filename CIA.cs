@@ -53,7 +53,6 @@ namespace CSClient
         }
 
         private static void missionAttackAdjacent(Unit u)
-
         {
             if (!u.HasAttacked)
                 foreach (Unit unit in AI.units)
