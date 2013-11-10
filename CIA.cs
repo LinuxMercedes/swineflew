@@ -82,6 +82,7 @@ namespace CSClient
             BitBoard.UpdateUnits();
         }
 
+
         private static void missionTrenchAroundTarget(Unit u, BitArray target)
         {
             BitArray adj = BitBoard.GetAdjacency(target);
@@ -90,7 +91,7 @@ namespace CSClient
                 Tile minTile = null;
                 foreach (Tile tile in AI.tiles)
                 {
-                    if (BitBoard.GetBit(adj, tile.X, tile.Y))
+                    if (BitBoard.GetBit(adj, tile.X, tile.Y) && u.Range >= Misc.ManhattanDistance(u, tile))
                     {
                         if (minTile == null)
                         {
@@ -103,7 +104,6 @@ namespace CSClient
                         }
                     }
                 }
-
                 u.dig(minTile);
             }
 
