@@ -207,9 +207,24 @@ class AI : BaseAI
 
     public static bool gotClose;
     public static List<int> defenders = new List<int>();
+    public static List<int> xSpawn = new List<int>();
+    public static List<int> ySpawn = new List<int>();
 
     public void ourRun()
     {
+        while (xSpawn.Count > 0)
+        {
+            foreach (Unit u in units)
+            {
+                if(u.Owner == playerID())
+                    if (u.X == xSpawn[0] && u.Y == ySpawn[0])
+                    {
+                        defenders.Add(u.Id);
+                        xSpawn.RemoveAt(0);
+                        ySpawn.RemoveAt(0);
+                    }
+            }
+        }
         System.Console.WriteLine("Turn number " + turnNumber());
         BitBoard.UpdateAll();
         betterSpawn();
@@ -280,12 +295,17 @@ class AI : BaseAI
     {
         if (turnNumber() <= 2)
         {
-            foreach (PumpStation p in pumpStations)
+            HashSet<int> pumpid = new HashSet<int>();
+            foreach (Tile t in tiles)
             {
-                if (p.Owner == playerID())
-                {
+                if (t.Owner != playerID()) continue;
+                if (t.PumpID == -1) continue;
+                if (pumpid.Contains(t.PumpID)) continue;
 
-                }
+                pumpid.Add(t.PumpID);
+                t.spawn((int)Types.Worker);
+                xSpawn.Add(t.X);
+                ySpawn.Add(t.Y);
             }
         }
         spawnUnits();
