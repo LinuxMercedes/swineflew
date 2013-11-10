@@ -484,11 +484,23 @@ class BitBoard
         BitArray invalidTiles = new BitArray(length, false).Or(waterTiles).Or(trenchTiles).Or(iceCaps).Xor(full);
         List<Node> path = AStar.route(start / height, start % height, iceCaps, false, invalidTiles);
 
-        // if a path exists, add current pump station to connected pump stations bitboard, go to next pump station
+        // if a path exists and ice cap is still producing, add current pump station to connected pump stations bitboard, go to next pump station
         if (path.Count != 0)
         {
-          connectedPumpStations.Or(currentPumpStation);
-          break;
+          bool validConnected = true;
+          foreach (Tile tile in BaseAI.tiles)
+          {
+            if (tile.X == path[path.Count - 1].x && tile.Y == path[path.Count - 1].y && tile.WaterAmount <= 1)
+            {
+              validConnected = false;
+              break;
+            }
+          }
+          if (validConnected)
+          {
+            connectedPumpStations.Or(currentPumpStation);
+            break;
+          }
         }
       }
 
