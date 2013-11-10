@@ -34,7 +34,7 @@ namespace CSClient
         //from the target bit board
         private static void missionGoTo(Unit u, BitArray b, bool walkThroughWater)
         {
-            if (u.MovementLeft == 0 || b.Equals(BitBoard.empty))
+            if (u.MovementLeft == 0 || BitBoard.Equal(b, BitBoard.empty))
             {
                 return;
             }
