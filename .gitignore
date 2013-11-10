@@ -11,6 +11,9 @@ codegen/output
 # fuckin' vim
 .*.sw?
 
+#visualizer
+MegaMinerAI12-Mars-Visualizer--Linux/*
+
 # Compiled client stuff we don't want
 client/library/sexp/lex.yy.*
 library/sexp/lex.yy.*
