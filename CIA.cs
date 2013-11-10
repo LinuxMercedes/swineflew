@@ -35,24 +35,23 @@ namespace CSClient
                 return;
             }
 
-						List<Node> path = AStar.route(u.X, u.Y, b, !walkThroughWater);
-						if(path.Count == 0)
-						{
-							System.Console.WriteLine("No Path Found");
-						}
-						foreach(Node n in path)
-						{
-							if(u.MovementLeft == 0) break;
+            List<Node> path = AStar.route(u.X, u.Y, b, !walkThroughWater);
+            if (path.Count == 0)
+            {
+                System.Console.WriteLine("No Path Found");
+            }
+            foreach (Node n in path)
+            {
+                if (u.MovementLeft == 0) break;
 
-							// Try to move
-							// if you fail to move, 
-							// curl up in a ball and cry
-							if(!u.move(n.x, n.y))
-							{
-								System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y + "!!!");
-								break;
-							}
-
+                // Try to move
+                // if you fail to move, 
+                // curl up in a ball and cry
+                if (!u.move(n.x, n.y))
+                {
+                    System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y + "!!!");
+                    break;
+                }
 						}
 						BitBoard.UpdateAll();
         }
@@ -62,9 +61,12 @@ namespace CSClient
             if (!u.HasAttacked)
                 foreach (Unit unit in AI.units)
                 {
-                    if (u.Range >= Misc.ManhattanDistance(u, unit))
+                    if (unit.Owner != u.Owner)
                     {
-                        u.attack(unit);
+                        if (u.Range >= Misc.ManhattanDistance(u, unit))
+                        {
+                            u.attack(unit);
+                        }
                     }
                 }
             BitBoard.UpdateAll();
