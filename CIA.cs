@@ -92,27 +92,35 @@ namespace CSClient
             if (!u.HasDug)
             {
                 Tile minTile = null;
+								List<Node> path = null;
                 foreach (Tile tile in AI.tiles)
                 {
                     if (BitBoard.GetBit(adj, tile.X, tile.Y) && 3 >= Misc.ManhattanDistance(u, tile))
                     {
+											  BitArray pos = BitBoard.position[tile.X][tile.Y];
+												BitArray dest = new BitArray(BitBoard.length, false).Or(pos).Or(BitBoard.GetNonDiagonalAdjacency(pos));
+												List<Node> p = AStar.route(u.X, u.Y, dest);
+												if (p.Count == 0 && !BitBoard.GetBit(dest, u.X, u.Y)) continue;
+
                         if (minTile == null)
                         {
                             minTile = tile;
+														path = p;
                         }
 
                         if (tile.Depth < minTile.Depth)
                         {
                             minTile = tile;
+														path = p;
                         }
                     }
                 }
 
 								if (minTile != null)
 								{
-									BitArray pos = BitBoard.position[minTile.X][minTile.Y];
-									BitArray dest = new BitArray(BitBoard.length, false).Or(pos).Or(BitBoard.GetNonDiagonalAdjacency(pos));
-									List<Node> path = AStar.route(u.X, u.Y, dest);
+//									BitArray pos = BitBoard.position[minTile.X][minTile.Y];
+//									BitArray dest = new BitArray(BitBoard.length, false).Or(pos).Or(BitBoard.GetNonDiagonalAdjacency(pos));
+//									List<Node> path = AStar.route(u.X, u.Y, dest);
 									int x = u.X;
 									int y = u.Y;
 
