@@ -75,5 +75,33 @@ namespace CSClient
                 }
             BitBoard.UpdateUnits();
         }
+
+				private static void missionTrenchAroundTarget(Unit u, BitArray target)
+				{
+					BitArray adj = BitBoard.GetAdjacency(target);
+					if(!u.HasDug())
+					{
+						Tile minTile = null;
+						foreach (Tile tile in AI.tiles)
+						{
+							if(BitBoard.GetBit(adj, tile.X, tile.Y)
+							{
+								if(minTile == null)
+								{
+									minTile = tile;
+								}
+									
+								if(tile.Depth < minTile.Depth)
+								{
+									minTile = tile;
+								}
+							}
+						}
+
+						u.dig(minTile);
+					}
+
+					BitBoard.UpdateAll(); // May cause water to change
+				}
     }
 }
