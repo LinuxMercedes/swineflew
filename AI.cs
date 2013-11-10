@@ -305,7 +305,7 @@ class AI : BaseAI
                 if (pumpid.Contains(t.PumpID)) continue;
 
                 pumpid.Add(t.PumpID);
-                t.spawn((int)Types.Worker);
+                t.spawn((int)Types.Tank);
                 xSpawn.Add(t.X);
                 ySpawn.Add(t.Y);
             }
@@ -322,9 +322,9 @@ class AI : BaseAI
             {
                 if (defenders.Contains(u.Id))
                 {
-                    missions.Add(new Mission(u, () => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y), Mission.missionTypes.defendAndTrench));
-                    //missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
-                    //missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
+                    //missions.Add(new Mission(u, () => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y), Mission.missionTypes.defendAndTrench));
+                    missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
+                    missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
                 }
                 else if (u.Type == (int)Types.Scout)
                 {
