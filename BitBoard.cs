@@ -206,9 +206,8 @@ class BitBoard
     oppMotionTiles = new BitArray(oppNonMotionTiles).Xor(full);
 
     // initialize special bitboards
-    myConnectedPumpStations = new BitArray(length, false);
-    oppConnectedPumpStations = new BitArray(length, false);
-
+    myConnectedPumpStations = GetConnectedPumpStations(myID);
+    oppConnectedPumpStations = GetConnectedPumpStations(oppID);
   }
 
   // clears the data in the non-constant bitboards
@@ -304,6 +303,10 @@ class BitBoard
     myMotionTiles = new BitArray(myNonMotionTiles).Xor(full);
     oppNonMotionTiles = new BitArray(length, false).Or(oppOccupiedTiles).Or(myOccupiedTiles).Or(oppSpawningSquares).Or(mySpawnBases).Or(iceCaps);
     oppMotionTiles = new BitArray(oppNonMotionTiles).Xor(full);
+
+    // populate special bitboards
+    myConnectedPumpStations = GetConnectedPumpStations(myID);
+    oppConnectedPumpStations = GetConnectedPumpStations(oppID);
   }
 
   // populates data in the unit bitboards for the current game state
