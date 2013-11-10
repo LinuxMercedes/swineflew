@@ -210,17 +210,10 @@ class AI : BaseAI
 
     public void ourRun()
     {
-<<<<<<< HEAD
 				System.Console.WriteLine("Turn number " + turnNumber());
 				BitBoard.UpdateAll();
 				spawnUnits();
 				BitBoard.UpdateAll();
-=======
-        System.Console.WriteLine("Turn number " + turnNumber());
-        BitBoard.Update();
-        betterSpawn();
-        BitBoard.Update();
->>>>>>> b847ac2d3f84ccca40ab26f73a3911e68195d8f0
         CIA.executeMissions(assignMissions());
     }
 
