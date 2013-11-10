@@ -194,7 +194,6 @@ class AI : BaseAI
     /// </summary>
     public override void init()
     {
-        gotClose = false;
         BitBoard.Initialize(this);
     }
 
@@ -207,14 +206,14 @@ class AI : BaseAI
 
     //our code =================================================
 
-    public static bool gotClose;
+    public static bool phase2;
     public static HashSet<int> defenders = new HashSet<int>();
     public static List<int> xSpawn = new List<int>();
     public static List<int> ySpawn = new List<int>();
 
     public void ourRun()
     {
-
+  System.Console.WriteLine("Turn number " + turnNumber());
         while (xSpawn.Count > 0)
         {
             foreach (Unit u in units)
@@ -230,7 +229,7 @@ class AI : BaseAI
             ySpawn.RemoveAt(0);
         }
 
-        System.Console.WriteLine("Turn number " + turnNumber());
+      
         BitBoard.UpdateAll();
         betterSpawn();
         BitBoard.UpdateAll();
@@ -332,7 +331,7 @@ class AI : BaseAI
         if (turnNumber() <= 1)
         {
             HashSet<int> pumpid = new HashSet<int>();
-            List<int> pumpStationIndexes = BitBoard.GetIndexes(BitBoard.myPumpStations);
+            List<int> pumpStationIndexes = BitBoard.GetIndexes(BitBoard.myConnectedPumpStations);
 
             foreach (Tile t in tiles)
             {
@@ -350,6 +349,7 @@ class AI : BaseAI
                     }
                 }
                 if (temp) continue;
+                temp = false;
                 foreach (Unit u in units)
                 {
                     if (u.X == t.X && u.Y == t.Y)
@@ -375,7 +375,7 @@ class AI : BaseAI
         List<Mission> offensivemissions = new List<Mission>();
         List<Mission> defensivemissions = new List<Mission>();
         List<Mission> attackmissions = new List<Mission>();
-
+        bool first = true;
         foreach (Unit u in units)
         {
             if (u.Owner == playerID())
@@ -392,6 +392,17 @@ class AI : BaseAI
                 {
                     if (!BitBoard.Equal(BitBoard.oppConnectedPumpStations, BitBoard.empty))
                     {
+                        if (first)
+                        {
+                            first = false;
+                            foreach (Unit e in units)
+                            {
+                                if (e.Owner != u.Owner && e.Type == (int)Types.Tank)
+                                {
+                                    offensivemissions.Add(new Mission(u, () => BitBoard.position[e.X][e.Y], Mission.missionTypes.goAttack));
+                                }
+                            }
+                        }
                         offensivemissions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goAttack));
                         offensivemissions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goAttack, true));
                     }
