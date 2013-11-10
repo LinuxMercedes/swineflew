@@ -231,6 +231,11 @@ class AI : BaseAI
 
       
         BitBoard.UpdateAll();
+        if (players[playerID()].WaterStored <= players[Math.Abs(playerID() - 1)].WaterStored && BitBoard.Equal(BitBoard.empty, new BitArray(BitBoard.length).Or(BitBoard.myConnectedPumpStations).Or(BitBoard.oppConnectedPumpStations)))
+        {
+            phase2 = true;
+            Console.WriteLine("we are loosing");
+        }
         betterSpawn();
         BitBoard.UpdateAll();
         CIA.executeMissions(assignMissions());
