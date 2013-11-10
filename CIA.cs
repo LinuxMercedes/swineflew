@@ -91,7 +91,7 @@ namespace CSClient
                 Tile minTile = null;
                 foreach (Tile tile in AI.tiles)
                 {
-                    if (BitBoard.GetBit(adj, tile.X, tile.Y) && u.Range >= Misc.ManhattanDistance(u, tile))
+                    if (BitBoard.GetBit(adj, tile.X, tile.Y) && 1 >= Misc.ManhattanDistance(u, tile))
                     {
                         if (minTile == null)
                         {
@@ -104,7 +104,8 @@ namespace CSClient
                         }
                     }
                 }
-                u.dig(minTile);
+								if (minTile != null)
+									u.dig(minTile);
             }
 
             BitBoard.UpdateAll(); // May cause water to change
