@@ -194,16 +194,30 @@ class BitBoard
     }
 
     // initialize generic bitboards
-    myOccupiedTiles = myWorkers.Or(myScouts.Or(myTanks));
-    oppOccupiedTiles = oppWorkers.Or(oppScouts.Or(oppTanks));
-    myNonMotionTiles = myOccupiedTiles.Or(oppOccupiedTiles.Or(mySpawningSquares.Or(oppSpawnBases.Or(iceCaps))));
-    myMotionTiles = myNonMotionTiles.Xor(full);
-    oppNonMotionTiles = oppOccupiedTiles.Or(myOccupiedTiles.Or(oppSpawningSquares.Or(mySpawnBases.Or(iceCaps))));
-    oppMotionTiles = oppNonMotionTiles.Xor(full);
-
-    // debug
-    PrintBitBoard(myWorkers);
-    Console.WriteLine("Initialize Complete.");
+    myOccupiedTiles = new BitArray(length, false);
+    myOccupiedTiles.Or(myWorkers);
+    myOccupiedTiles.Or(myScouts);
+    myOccupiedTiles.Or(myTanks);
+    oppOccupiedTiles = new BitArray(length, false);
+    oppOccupiedTiles.Or(oppWorkers);
+    oppOccupiedTiles.Or(oppScouts);
+    oppOccupiedTiles.Or(oppTanks);
+    myNonMotionTiles = new BitArray(length, false);
+    myNonMotionTiles.Or(myOccupiedTiles);
+    myNonMotionTiles.Or(oppOccupiedTiles);
+    myNonMotionTiles.Or(mySpawningSquares);
+    myNonMotionTiles.Or(oppSpawnBases);
+    myNonMotionTiles.Or(iceCaps);
+    myMotionTiles = myNonMotionTiles;
+    myMotionTiles.Xor(full);
+    oppNonMotionTiles = new BitArray(length, false);
+    oppNonMotionTiles.Or(oppOccupiedTiles);
+    oppNonMotionTiles.Or(myOccupiedTiles);
+    oppNonMotionTiles.Or(oppSpawningSquares);
+    oppNonMotionTiles.Or(mySpawnBases);
+    oppNonMotionTiles.Or(iceCaps);
+    oppMotionTiles = oppNonMotionTiles;
+    oppMotionTiles.Xor(full);
   }
 
   // clears the data in the non-constant bitboard objects
@@ -229,10 +243,6 @@ class BitBoard
     myMotionTiles.SetAll(false);
     oppNonMotionTiles.SetAll(false);
     oppMotionTiles.SetAll(false);
-
-    // debug
-    PrintBitBoard(myWorkers);
-    Console.WriteLine("Reset Complete.");
   }
 
   // populates the data in the bitboard objects for the current game state
@@ -325,15 +335,32 @@ class BitBoard
     }
 
     // populate generic bitboards
-    myOccupiedTiles = myWorkers.Or(myScouts.Or(myTanks));
-    oppOccupiedTiles = oppWorkers.Or(oppScouts.Or(oppTanks));
-    myNonMotionTiles = myOccupiedTiles.Or(oppOccupiedTiles.Or(mySpawningSquares.Or(oppSpawnBases).Or(iceCaps)));
-    myMotionTiles = myNonMotionTiles.Xor(full);
-    oppNonMotionTiles = oppOccupiedTiles.Or(myOccupiedTiles.Or(oppSpawningSquares.Or(mySpawnBases).Or(iceCaps)));
-    oppMotionTiles = oppNonMotionTiles.Xor(full);
+    myOccupiedTiles = new BitArray(length, false);
+    myOccupiedTiles.Or(myWorkers);
+    myOccupiedTiles.Or(myScouts);
+    myOccupiedTiles.Or(myTanks);
+    oppOccupiedTiles = new BitArray(length, false);
+    oppOccupiedTiles.Or(oppWorkers);
+    oppOccupiedTiles.Or(oppScouts);
+    oppOccupiedTiles.Or(oppTanks);
+    myNonMotionTiles = new BitArray(length, false);
+    myNonMotionTiles.Or(myOccupiedTiles);
+    myNonMotionTiles.Or(oppOccupiedTiles);
+    myNonMotionTiles.Or(mySpawningSquares);
+    myNonMotionTiles.Or(oppSpawnBases);
+    myNonMotionTiles.Or(iceCaps);
+    myMotionTiles = myNonMotionTiles;
+    myMotionTiles.Xor(full);
+    oppNonMotionTiles = new BitArray(length, false);
+    oppNonMotionTiles.Or(oppOccupiedTiles);
+    oppNonMotionTiles.Or(myOccupiedTiles);
+    oppNonMotionTiles.Or(oppSpawningSquares);
+    oppNonMotionTiles.Or(mySpawnBases);
+    oppNonMotionTiles.Or(iceCaps);
+    oppMotionTiles = oppNonMotionTiles;
+    oppMotionTiles.Xor(full);
 
     // debug
-    PrintBitBoard(myWorkers);
     Console.WriteLine("Populate Complete.");
   }
 

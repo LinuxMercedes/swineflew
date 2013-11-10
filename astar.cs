@@ -9,7 +9,7 @@ class AStar
 		List<Node> open = new List<Node>();
 		HashSet<Node> closed = new HashSet<Node>();
 		
-		System.Console.WriteLine("Starting from " + x_start + " " + y_start);
+		//System.Console.WriteLine("Starting from " + x_start + " " + y_start);
 		Node start = new Node(x_start, y_start);
 		start.g = 0;
 		start.h = heuristic(start, b);
