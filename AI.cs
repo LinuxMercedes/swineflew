@@ -297,8 +297,8 @@ class AI : BaseAI
                 {
                     missions.Add(new Mission(u, () => BitBoard.oppPumpStations, Mission.missionTypes.goTo));
                 }
+                missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
             }
-            missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
         }
         return missions;
     }
