@@ -210,10 +210,10 @@ class AI : BaseAI
 
     public void ourRun()
     {
-				System.Console.WriteLine("Turn number " + turnNumber());
-				BitBoard.UpdateAll();
-				betterSpawn();
-				BitBoard.UpdateAll();
+        System.Console.WriteLine("Turn number " + turnNumber());
+        BitBoard.UpdateAll();
+        betterSpawn();
+        BitBoard.UpdateAll();
         CIA.executeMissions(assignMissions());
     }
 
@@ -278,16 +278,16 @@ class AI : BaseAI
 
     public void betterSpawn()
     {
-        //if (turnNumber() <= 2)
-        //{
-        //    foreach (PumpStation p in pumpStations)
-        //    {
-        //        if (p.Owner == playerID())
-        //        {
-                   
-        //        }
-        //    }
-        //}
+        if (turnNumber() <= 2)
+        {
+            foreach (PumpStation p in pumpStations)
+            {
+                if (p.Owner == playerID())
+                {
+
+                }
+            }
+        }
         spawnUnits();
     }
 
@@ -300,12 +300,13 @@ class AI : BaseAI
             {
                 if (defenders.Contains(u.Id))
                 {
-                    missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
-                    missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
+                    missions.Add(new Mission(u, () => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y), Mission.missionTypes.defendAndTrench));
+                    //missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
+                    //missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
                 }
                 else if (u.Type == (int)Types.Scout)
                 {
-                    if (!BitBoard.oppConnectedPumpStations.Equals(BitBoard.empty))
+                    if (!BitBoard.Equal(BitBoard.oppConnectedPumpStations, BitBoard.empty))
                     {
                         missions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo));
                     }
