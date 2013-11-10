@@ -206,6 +206,7 @@ class AI : BaseAI
     public void ourRun()
     {
 				System.Console.WriteLine("Turn number " + turnNumber());
+				BitBoard.Update();
 				spawnUnits();
         CIA.executeMissions(assignMissions());
     }
