@@ -64,6 +64,9 @@
     <Compile Include="..\..\Mappable.cs">
       <Link>Mappable.cs</Link>
     </Compile>
+    <Compile Include="..\..\Misc.cs">
+      <Link>Misc.cs</Link>
+    </Compile>
     <Compile Include="..\..\Mission.cs">
       <Link>Mission.cs</Link>
     </Compile>
@@ -82,7 +85,6 @@
     <Compile Include="..\..\UnitType.cs">
       <Link>UnitType.cs</Link>
     </Compile>
-    <Compile Include="Misc.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
