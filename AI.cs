@@ -245,79 +245,76 @@ class AI : BaseAI
         for (int i = 0; i < units.Length; i++)
             if (units[i].Owner == playerID())
                 numberOfUnits++;
-        for (int i = 0; i < tiles.Length; i++)
+        if (1 == playerID())
+            for (int i = 0; i < tiles.Length; i++)
+                innerloop(i);
+        else
+            for (int i = tiles.Length - 1; i <= 0; i--)
+                innerloop(i);
+    }
+
+    private void innerloop(int i)
+    {
+        // If this tile is my spawn tile or my pump station...
+        if (tiles[i].Owner == playerID())
         {
-            // If this tile is my spawn tile or my pump station...
-            if (tiles[i].Owner == playerID())
+            int cost = Int32.MaxValue;
+            for (int j = 0; j < unitTypes.Length; j++)
+                if (unitTypes[j].Type == (int)Types.Scout)
+                    cost = unitTypes[j].Cost;
+
+            // If there is enough oxygen to spawn the unit...
+            if (players[playerID()].Oxygen >= cost)
             {
-                int cost = Int32.MaxValue;
-                for (int j = 0; j < unitTypes.Length; j++)
-                    if (unitTypes[j].Type == (int)Types.Scout)
-                        cost = unitTypes[j].Cost;
-
-                // If there is enough oxygen to spawn the unit...
-                if (players[playerID()].Oxygen >= cost)
+                // ...and nothing is spwning on the tile...
+                if (!tiles[i].IsSpawning)
                 {
-                    // ...and if we can spawn more units...
-                    if (numberOfUnits < maxUnits())
+                    bool canSpawn = true;
+
+                    // If it's a pump station and it's not being seiged...
+                    if (tiles[i].PumpID != -1)
                     {
-                        // ...and nothing is spwning on the tile...
-                        if (!tiles[i].IsSpawning)
+                        // ...find the pump in the vector.
+                        for (int j = 0; j < pumpStations.Length; j++)
                         {
-                            bool canSpawn = true;
-
-                            // If it's a pump station and it's not being seiged...
-                            if (tiles[i].PumpID != -1)
-                            {
-                                // ...find the pump in the vector.
-                                for (int j = 0; j < pumpStations.Length; j++)
-                                {
-                                    // If it's being sieged, don't spawn.
-                                    if (pumpStations[j].Id == tiles[i].PumpID && pumpStations[j].SiegeAmount > 0)
-                                        canSpawn = false;
-                                }
-                            }
-
-                            // If there is someone else on the tile, don't spawn.
-                            for (int j = 0; j < units.Length; j++)
-                                if (tiles[i].X == units[j].X && tiles[i].Y == units[j].Y)
-                                    canSpawn = false;
-                            bool defender = false;
-                            if (BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
-                                    (BitBoard.myConnectedPumpStations).Or
-                                    (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), tiles[i].X, tiles[i].Y)
-                                )
-                            {
-                                defender = true;
-                            }
-                            foreach (Unit u in units)
-                            {
-                                if (defenders.Contains(u.Id)
-                                    && BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
-                                    (BitBoard.myConnectedPumpStations).Or
-                                    (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), tiles[i].X, tiles[i].Y)
-                                    && BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
-                                    (BitBoard.myConnectedPumpStations).Or
-                                    (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), u.X, u.Y)
-                                   )
-                                {
-                                    canSpawn = false;
-                                }
-                            }
-
-                            // If possible, spawn!
-                            if (canSpawn)
-                            {
-                                if (defender)
-                                {
-                                    tiles[i].spawn((int)Types.Worker);
-                                    xSpawn.Add(tiles[i].X);
-                                    ySpawn.Add(tiles[i].Y);
-                                }
-                                tiles[i].spawn((int)Types.Scout);
-                                numberOfUnits++;
-                            }
+                            // If it's being sieged, don't spawn.
+                            if (pumpStations[j].Id == tiles[i].PumpID && pumpStations[j].SiegeAmount > 0)
+                                canSpawn = false;
                         }
+                    }
+
+                    // If there is someone else on the tile, don't spawn.
+                    for (int j = 0; j < units.Length; j++)
+                        if (tiles[i].X == units[j].X && tiles[i].Y == units[j].Y)
+                            canSpawn = false;
+                    bool defender = false;
+                    if (turnNumber() > 1 && BitBoard.GetBit(BitBoard.myConnectedPumpStations, tiles[i].X, tiles[i].Y))
+                    {
+                        defender = true;
+                    }
+                    foreach (Unit u in units)
+                    {
+                        if (defenders.Contains(u.Id)
+                            && BitBoard.GetBit(BitBoard.myConnectedPumpStations, tiles[i].X, tiles[i].Y)
+                            && BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
+                            (BitBoard.myConnectedPumpStations).Or
+                            (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), u.X, u.Y)
+                           )
+                        {
+                            canSpawn = false;
+                        }
+                    }
+
+                    // If possible, spawn!
+                    if (canSpawn)
+                    {
+                        if (defender)
+                        {
+                            tiles[i].spawn((int)Types.Worker);
+                            xSpawn.Add(tiles[i].X);
+                            ySpawn.Add(tiles[i].Y);
+                        }
+                        tiles[i].spawn((int)Types.Scout);
                     }
                 }
             }
