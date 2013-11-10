@@ -187,8 +187,8 @@ namespace CSClient
 //									BitArray pos = BitBoard.position[minTile.X][minTile.Y];
 //									BitArray dest = new BitArray(BitBoard.length, false).Or(pos).Or(BitBoard.GetNonDiagonalAdjacency(pos));
 //									List<Node> path = AStar.route(u.X, u.Y, dest);
-									int x = u.X;
-									int y = u.Y;
+									//int x = u.X;
+									//int y = u.Y;
 
 									Console.WriteLine(Misc.ManhattanDistance(u, minTile));
 									foreach(Node n in path) 

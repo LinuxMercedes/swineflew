@@ -482,7 +482,7 @@ class BitBoard
       foreach (int start in startingPoints)
       {
         BitArray invalidTiles = new BitArray(length, false).Or(waterTiles).Or(trenchTiles).Or(iceCaps).Xor(full);
-        List<Node> path = AStar.route(start / height, start % height, iceCaps, false, invalidTiles);
+        List<Node> path = AStar.route(GetX(start), GetY(start), iceCaps, false, invalidTiles);
 
         // if a path exists and ice cap is still producing, add current pump station to connected pump stations bitboard, go to next pump station
         if (path.Count != 0)
@@ -512,6 +512,46 @@ class BitBoard
     }
 
     return connectedPumpStations;
+  }
+
+  // returns the most efficient path for trenching from our pump station to an ice cap
+  public static List<Node> GetTrenchingPathToIceCap(BitArray pumpStation)
+  {
+    // create bitboard of pump station and all connected trenches
+    BitArray endPoints = new BitArray(pumpStation);
+    BitArray waterAndTrenchTiles = new BitArray(length, false).Or(waterTiles).Or(trenchTiles);
+    BitArray adjacency = GetAdjacency(pumpStation).And(waterAndTrenchTiles);
+    GetConnectedTrenches(ref endPoints, adjacency, ref waterAndTrenchTiles);
+
+    // get closest glacier to pumping station
+    List<int> startIndexes = GetIndexes(iceCaps);
+    int psIndex = GetIndexes(pumpStation)[0];
+    int bestDistance = 0;
+    int bestIceCapIndex = -1;
+    foreach (int start in startIndexes)
+    {
+      int currentDistance = Misc.ManhattanDistance(start, psIndex);
+      if (bestDistance == 0 || currentDistance < bestDistance)
+      {
+        bestDistance = currentDistance;
+        bestIceCapIndex = start;
+      }
+    }
+
+    // get shortest path from closest glacier   
+    BitArray invalidTiles = new BitArray(myNonMotionTiles).Or(myPumpStations).Or(oppPumpStations).Or(mySpawnBases).Or(oppSpawnBases);
+    return AStar.route(GetX(bestIceCapIndex), GetY(bestIceCapIndex), endPoints, false, invalidTiles);
+  }
+
+  // returns a bitboard of all trenches connected to starting bitboard
+  public static void GetConnectedTrenches(ref BitArray connectedTrenches, BitArray currentAdjacency, ref BitArray waterAndTrenchTiles)
+  {
+    connectedTrenches.Or(currentAdjacency);
+    List<int> indexes = GetIndexes(currentAdjacency);
+    foreach (int i in indexes)
+    {
+      GetConnectedTrenches(ref connectedTrenches, GetNonDiagonalAdjacency(new BitArray(position[GetX(i)][GetY(i)])).And(waterAndTrenchTiles), ref waterAndTrenchTiles);
+    }
   }
 
   // returns the adjacency bitboard (excluding diagonals) for a specified bitboard

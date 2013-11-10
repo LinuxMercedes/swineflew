@@ -19,7 +19,7 @@ class AStar
 		//System.Console.WriteLine("Starting from " + x_start + " " + y_start);
 		Node start = new Node(x_start, y_start);
 		start.g = 0;
-		start.h = heuristic(start, b);
+		start.h = heuristic(start, b, avoidWater);
 		start.f = start.g + start.h;
 		open.Add(start);
 
@@ -76,7 +76,7 @@ class AStar
 		return getBb(n.x, n.y, b);
 	}
 
-	public static int heuristic(Node n, BitArray b)
+	public static int heuristic(Node n, BitArray b, bool avoidWater)
 	{
 		int h = BitBoard.width + BitBoard.height + 1; //Max distance
 		for(int x = 0; x < BitBoard.width; x++)
@@ -138,7 +138,7 @@ class AStar
 
 			// Woop, we have a valid move
 			Node move = new Node(x, y, n);
-			move.h = heuristic(n, b);
+			move.h = heuristic(n, b, avoidWater);
 			move.f = move.h + move.g;
 			moves.Add(move);
 		}
