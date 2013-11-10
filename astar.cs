@@ -23,7 +23,7 @@ class AStar
 			open.RemoveAt(0);
 			closed.Add(here);
 
-			System.Console.WriteLine("Here: " + here.x + " " + here.y + " f: " + here.f);
+			//System.Console.WriteLine("Here: " + here.x + " " + here.y + " f: " + here.f);
 
 			List<Node> moves = genMoves(here, b, avoidWater);
 
@@ -73,7 +73,7 @@ class AStar
 				}
 			}
 		}
-		System.Console.WriteLine("Heuristic for " + n.x + " " + n.y + ": " + h);
+		//System.Console.WriteLine("Heuristic for " + n.x + " " + n.y + ": " + h);
 		return h;
 	}
 
@@ -100,16 +100,16 @@ class AStar
 			// See if we can move to that location
 			if (getBb(x, y, BitBoard.myNonMotionTiles))
 			{
-				System.Console.WriteLine("Cannot move to " + x + " " + y);
-				System.Console.WriteLine(getBb(x, y, BitBoard.iceCaps));
-				System.Console.WriteLine(getBb(x, y, BitBoard.myWorkers));
-				System.Console.WriteLine(getBb(x, y, BitBoard.myScouts));
-				System.Console.WriteLine(getBb(x, y, BitBoard.myTanks));
-				System.Console.WriteLine(getBb(x, y, BitBoard.mySpawningSquares));
-				System.Console.WriteLine(getBb(x, y, BitBoard.oppSpawnBases));
-				System.Console.WriteLine(getBb(x, y, BitBoard.oppWorkers));
-				System.Console.WriteLine(getBb(x, y, BitBoard.oppScouts));
-				System.Console.WriteLine(getBb(x, y, BitBoard.oppTanks));
+				//System.Console.WriteLine("Cannot move to " + x + " " + y);
+				//System.Console.WriteLine(getBb(x, y, BitBoard.iceCaps));
+				//System.Console.WriteLine(getBb(x, y, BitBoard.myWorkers));
+				//System.Console.WriteLine(getBb(x, y, BitBoard.myScouts));
+				//System.Console.WriteLine(getBb(x, y, BitBoard.myTanks));
+				//System.Console.WriteLine(getBb(x, y, BitBoard.mySpawningSquares));
+				//System.Console.WriteLine(getBb(x, y, BitBoard.oppSpawnBases));
+				//System.Console.WriteLine(getBb(x, y, BitBoard.oppWorkers));
+				//System.Console.WriteLine(getBb(x, y, BitBoard.oppScouts));
+				//System.Console.WriteLine(getBb(x, y, BitBoard.oppTanks));
 				continue;
 			}
 
@@ -120,7 +120,7 @@ class AStar
 			Node move = new Node(x, y, n);
 			move.h = heuristic(n, b);
 			move.f = move.h + move.g;
-			System.Console.WriteLine("Adding " + x + " " + y + " f: " + move.f);
+			//System.Console.WriteLine("Adding " + x + " " + y + " f: " + move.f);
 			moves.Add(move);
 		}
 
