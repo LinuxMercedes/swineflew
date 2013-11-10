@@ -313,7 +313,7 @@ class AI : BaseAI
 
     public void betterSpawn()
     {
-        if (turnNumber() <= 2)
+        if (turnNumber() <= 1)
         {
             HashSet<int> pumpid = new HashSet<int>();
             List<int> pumpStationIndexes = BitBoard.GetIndexes(BitBoard.myPumpStations);
@@ -374,6 +374,7 @@ class AI : BaseAI
                     if (!BitBoard.Equal(BitBoard.oppConnectedPumpStations, BitBoard.empty))
                     {
                         missions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo));
+                        missions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo,true));
                     }
                     else
                     {
