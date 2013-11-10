@@ -195,6 +195,7 @@ class AI : BaseAI
         gotClose = false;
         BitBoard.Initialize(this);
         
+
         // debug
         Console.WriteLine("\nMy Pump Stations:");
         BitBoard.PrintBitBoard(BitBoard.myPumpStations);
@@ -204,7 +205,7 @@ class AI : BaseAI
         BitBoard.PrintBitBoard(BitBoard.myConnectedPumpStations);
         Console.WriteLine("\nOpp Connected Pump Stations:");
         BitBoard.PrintBitBoard(BitBoard.oppConnectedPumpStations);
-        Console.Read();
+
     }
 
     /// <summary>
