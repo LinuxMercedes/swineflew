@@ -223,7 +223,7 @@ class AI : BaseAI
     {
 				System.Console.WriteLine("Turn number " + turnNumber());
 				BitBoard.UpdateAll();
-				spawnUnits();
+				betterSpawn();
 				BitBoard.UpdateAll();
         CIA.executeMissions(assignMissions());
     }
@@ -315,7 +315,7 @@ class AI : BaseAI
                 }
                 else if (u.Type == (int)Types.Scout)
                 {
-                    missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
+                    missions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo));
                 }
                 missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
             }
