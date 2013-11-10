@@ -22,14 +22,14 @@ namespace CSClient
                         missionAttackInRange(m.agent);
                         break;
                     case Mission.missionTypes.goAttack:
-                        missionGoTo(m.agent, target, m.walkThroughWater);
+                        missionGoToAttack(m.agent, target, m.walkThroughWater);
                         missionAttackInRange(m.agent);//todo actually implement goattack
                         break;
                     case Mission.missionTypes.defendAndTrench:
                         missionGoTo(m.agent, target, m.walkThroughWater);
                         missionAttackInRange(m.agent);
-                        missionTrenchAroundTarget(m.agent, target);
-                        missionAttackInRange(m.agent);
+//                        missionTrenchAroundTarget(m.agent, target);
+//                        missionAttackInRange(m.agent);
                         break;
                     case Mission.missionTypes.defendPumpStation:
                         //todo: implement
@@ -72,6 +72,61 @@ namespace CSClient
             BitBoard.UpdateUnits();
         }
 
+				private static void missionGoToAttack(Unit u, BitArray b, bool walkThroughWater)
+        {
+            if (u.MovementLeft == 0 || BitBoard.Equal(b, BitBoard.empty))
+            {
+                return;
+            }
+
+            List<Node> path = AStar.route(u.X, u.Y, b, !walkThroughWater);
+            if (path.Count == 0)
+            {
+							if(BitBoard.GetBit(b, u.X, u.Y))
+							{
+								BitArray dest = BitBoard.GetPumpStation(b, u.X, u.Y);
+								dest.And(BitBoard.GetNonDiagonalAdjacency(BitBoard.oppOccupiedTiles));
+								if(!BitBoard.Equal(dest, BitBoard.empty))
+								{
+									path = AStar.route(u.X, u.Y, dest, !walkThroughWater);
+									foreach (Node n in path) 
+									{
+										if (u.MovementLeft == 0) break;
+										u.move(n.x, n.y);
+									}
+								}
+							}
+            }
+            foreach (Node n in path)
+            {
+								bool stop = false;
+                if (u.MovementLeft == 0) break;
+
+                // Try to move
+                // if you fail to move, 
+                // curl up in a ball and cry
+                if (!u.move(n.x, n.y))
+                {
+                    System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y + "!!!");
+                    break;
+                }
+								//Try to stop once we are close enough to attack
+								foreach (Unit unit in AI.units)
+                {
+                    if (unit.Owner != u.Owner)
+                    {
+                        if (u.Range >= Misc.ManhattanDistance(u, unit))
+                        {
+													stop = true;
+													break;
+												}
+                    }
+                }
+
+								if(stop) break;
+            }
+            BitBoard.UpdateUnits();
+        }
         private static void missionAttackInRange(Unit u)
         {
             if (!u.HasAttacked)

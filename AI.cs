@@ -310,7 +310,7 @@ class AI : BaseAI
                     {
                         if (defender)
                         {
-                            tiles[i].spawn((int)Types.Worker);
+                            tiles[i].spawn((int)Types.Tank);
                             xSpawn.Add(tiles[i].X);
                             ySpawn.Add(tiles[i].Y);
                         }
@@ -356,7 +356,7 @@ class AI : BaseAI
 
 
                 pumpid.Add(t.PumpID);
-                t.spawn((int)Types.Worker);
+                t.spawn((int)Types.Tank);
                 xSpawn.Add(t.X);
                 ySpawn.Add(t.Y);
             }
@@ -386,8 +386,8 @@ class AI : BaseAI
                 {
                     if (!BitBoard.Equal(BitBoard.oppConnectedPumpStations, BitBoard.empty))
                     {
-                        offensivemissions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo));
-                        offensivemissions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goTo, true));
+                        offensivemissions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goAttack));
+                        offensivemissions.Add(new Mission(u, () => BitBoard.oppConnectedPumpStations, Mission.missionTypes.goAttack, true));
                     }
                     else
                     {
