@@ -1,4 +1,4 @@
-using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,7 +81,7 @@ class BitBoard
         SetBit(position[i][j], i, j, true);
       }
     }
-    
+
     // initialize type-specific bitboards
     myPumpStations = new BitArray(length, false);
     mySpawnBases = new BitArray(length, false);
@@ -97,7 +97,7 @@ class BitBoard
     oppTanks = new BitArray(length, false);
     waterTiles = new BitArray(length, false);
     trenchTiles = new BitArray(length, false);
-    dirtTiles  = new BitArray(length, false);
+    dirtTiles = new BitArray(length, false);
     iceCaps = new BitArray(length, false);
 
     foreach (Tile tile in BaseAI.tiles)
@@ -208,7 +208,7 @@ class BitBoard
     myNonMotionTiles.Or(mySpawningSquares);
     myNonMotionTiles.Or(oppSpawnBases);
     myNonMotionTiles.Or(iceCaps);
-    myMotionTiles = myNonMotionTiles;
+    myMotionTiles = new BitArray(myNonMotionTiles);
     myMotionTiles.Xor(full);
     oppNonMotionTiles = new BitArray(length, false);
     oppNonMotionTiles.Or(oppOccupiedTiles);
@@ -216,7 +216,7 @@ class BitBoard
     oppNonMotionTiles.Or(oppSpawningSquares);
     oppNonMotionTiles.Or(mySpawnBases);
     oppNonMotionTiles.Or(iceCaps);
-    oppMotionTiles = oppNonMotionTiles;
+    oppMotionTiles = new BitArray(oppNonMotionTiles);
     oppMotionTiles.Xor(full);
   }
 
@@ -349,7 +349,7 @@ class BitBoard
     myNonMotionTiles.Or(mySpawningSquares);
     myNonMotionTiles.Or(oppSpawnBases);
     myNonMotionTiles.Or(iceCaps);
-    myMotionTiles = myNonMotionTiles;
+    myMotionTiles = new BitArray(myNonMotionTiles);
     myMotionTiles.Xor(full);
     oppNonMotionTiles = new BitArray(length, false);
     oppNonMotionTiles.Or(oppOccupiedTiles);
@@ -357,7 +357,7 @@ class BitBoard
     oppNonMotionTiles.Or(oppSpawningSquares);
     oppNonMotionTiles.Or(mySpawnBases);
     oppNonMotionTiles.Or(iceCaps);
-    oppMotionTiles = oppNonMotionTiles;
+    oppMotionTiles = new BitArray(oppNonMotionTiles);
     oppMotionTiles.Xor(full);
 
     // debug
