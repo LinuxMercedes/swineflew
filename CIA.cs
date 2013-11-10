@@ -79,12 +79,12 @@ namespace CSClient
 				private static void missionTrenchAroundTarget(Unit u, BitArray target)
 				{
 					BitArray adj = BitBoard.GetAdjacency(target);
-					if(!u.HasDug())
+					if(!u.HasDug)
 					{
 						Tile minTile = null;
 						foreach (Tile tile in AI.tiles)
 						{
-							if(BitBoard.GetBit(adj, tile.X, tile.Y)
+							if(BitBoard.GetBit(adj, tile.X, tile.Y))
 							{
 								if(minTile == null)
 								{
