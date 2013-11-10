@@ -96,9 +96,28 @@ class AStar
 			if (y < 0) continue;
 
 			// See if we can move to that location
-			if (getBb(x, y, BitBoard.iceCaps.Or(BitBoard.mySpawnBases)) )
+			if (getBb(x, y, BitBoard.iceCaps
+						.Or(BitBoard.myWorkers)
+						.Or(BitBoard.myScouts)
+						.Or(BitBoard.myTanks)
+						.Or(BitBoard.mySpawningSquares)
+						.Or(BitBoard.oppSpawnBases)
+						.Or(BitBoard.oppWorkers)
+						.Or(BitBoard.oppScouts)
+						.Or(BitBoard.oppTanks)
+						)
+				 )
 			{
 				System.Console.WriteLine("Cannot move to " + x + " " + y);
+				System.Console.WriteLine(getBb(x, y, BitBoard.iceCaps));
+				System.Console.WriteLine(getBb(x, y, BitBoard.myWorkers));
+				System.Console.WriteLine(getBb(x, y, BitBoard.myScouts));
+				System.Console.WriteLine(getBb(x, y, BitBoard.myTanks));
+				System.Console.WriteLine(getBb(x, y, BitBoard.mySpawningSquares));
+				System.Console.WriteLine(getBb(x, y, BitBoard.oppSpawnBases));
+				System.Console.WriteLine(getBb(x, y, BitBoard.oppWorkers));
+				System.Console.WriteLine(getBb(x, y, BitBoard.oppScouts));
+				System.Console.WriteLine(getBb(x, y, BitBoard.oppTanks));
 				continue;
 			}
 
