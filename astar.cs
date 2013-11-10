@@ -55,8 +55,9 @@ class AStar
 				path.Add(path[path.Count - 1].parent);
 			}
 		}
-
-		path.RemoveAt(path.Count - 1); // Remove start node?
+		
+		if(path.Count > 0)
+			path.RemoveAt(path.Count - 1); // Remove start node?
 
 		path.Reverse();
 
