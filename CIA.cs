@@ -146,7 +146,7 @@ namespace CSClient
 
 				private static void missionBuildTrench(Unit u, BitArray target)
 				{
-					List<Tile> glaciers = new List<Tile>();
+					/*List<Tile> glaciers = new List<Tile>();
 					foreach(Tile t in tiles)
 					{
 						if (t.WaterAmount > 1)
@@ -174,7 +174,7 @@ namespace CSClient
 					//have chosen a 
 
 
-
+*/
 					BitBoard.UpdateAll();
 				}
     }
