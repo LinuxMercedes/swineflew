@@ -261,9 +261,9 @@ class AI : BaseAI
             int cost = Int32.MaxValue;
             for (int j = 0; j < unitTypes.Length; j++)
 
-                if (turnNumber() <= 1 && unitTypes[j].Type == (int)Types.Scout)
+                if (turnNumber() <= 1 && unitTypes[j].Type == (int)Types.Worker)
                     cost = unitTypes[j].Cost;
-                else if (turnNumber() > 1 && unitTypes[j].Type == (int)Types.Worker)
+                else if (turnNumber() > 1 && unitTypes[j].Type == (int)Types.Scout)
                     cost = unitTypes[j].Cost;
 
             // If there is enough oxygen to spawn the unit...
@@ -388,7 +388,7 @@ class AI : BaseAI
                     //    () => BitBoard.GetPumpStation(new BitArray(BitBoard.length, false).Or(BitBoard.myConnectedPumpStations).Or(BitBoard.oppConnectedPumpStations),
                     //    u.X, u.Y), Mission.missionTypes.defendPumpStation));
                 }
-                else if (u.Type == (int)Types.Scout)
+                else if (u.Type == (int)Types.Scout || u.Type == (int)Types.Worker)
                 {
                     if (!BitBoard.Equal(BitBoard.oppConnectedPumpStations, BitBoard.empty))
                     {
