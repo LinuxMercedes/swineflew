@@ -382,7 +382,7 @@ class BitBoard
     // check to see if specified unit is on one of our pump stations
     BitArray test = new BitArray(length, false).Or(pumpStations);
     test.And(position[x][y]);
-    if (test.Equals(empty))
+    if (Equal(test, empty))
     {
       return empty;
     }
@@ -437,7 +437,7 @@ class BitBoard
     {
       pumpStations.Or(oppPumpStations);
     }
-    if (pumpStations.Equals(empty))
+    if (Equal(pumpStations, empty))
     {
       return empty;
     }
@@ -449,17 +449,24 @@ class BitBoard
     {
       // get current pump station
       BitArray currentPumpStation = GetPumpStation(pumpStations, index / height, index % height);
-      if (currentPumpStation.Equals(empty))
+      if (Equal(currentPumpStation, empty))
       {
         continue;
       }
 
       // get starting points from current pump station's adjacency bitboard
       BitArray currentAdjacency = GetAdjacency(currentPumpStation).And(waterTiles);
-      if (currentAdjacency.Equals(empty))
+      if (Equal(currentAdjacency, empty))
       {
+        // remove current pump station from pump stations bitboard, continue
+        pumpStations.Xor(currentPumpStation);
         continue;
       }
+
+      // debug
+      Console.WriteLine("Current Adjacency:");
+      PrintBitBoard(currentAdjacency);
+
       List<int> startingPoints = GetIndeces(currentAdjacency);
 
       // get path from starting points to nearest connected glacier
@@ -468,10 +475,11 @@ class BitBoard
         BitArray invalidTiles = new BitArray(length, false).Or(waterTiles).Or(iceCaps).Xor(full);
         List<Node> path = AStar.route(start / height, start % height, iceCaps, false, invalidTiles);
 
-        // if a path exists, add current pump station to connected pump stations bitboard
+        // if a path exists, add current pump station to connected pump stations bitboard, go to next pump station
         if (path.Count != 0)
         {
           connectedPumpStations.Or(currentPumpStation);
+          break;
         }
       }
 
@@ -535,6 +543,25 @@ class BitBoard
   public static int GetY(int index)
   {
     return index % height;
+  }
+
+  // returns true if the two bitboards are equivalent, false otherwise
+  public static bool Equal(BitArray b1, BitArray b2)
+  {
+    if (b1.Length != b2.Length)
+    {
+      return false;
+    }
+
+    for (int i = 0; i < b1.Length && i < b2.Length; i++)
+    {
+      if (b1.Get(i) != b2.Get(i))
+      {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   // prints the coordinates of the high bits in the specified bitboard
