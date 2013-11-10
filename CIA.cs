@@ -91,7 +91,7 @@ namespace CSClient
                 Tile minTile = null;
                 foreach (Tile tile in AI.tiles)
                 {
-                    if (BitBoard.GetBit(adj, tile.X, tile.Y) && 1 >= Misc.ManhattanDistance(u, tile))
+                    if (BitBoard.GetBit(adj, tile.X, tile.Y) && 3 >= Misc.ManhattanDistance(u, tile))
                     {
                         if (minTile == null)
                         {
@@ -105,7 +105,19 @@ namespace CSClient
                     }
                 }
 								if (minTile != null)
-									u.dig(minTile);
+								{
+									BitArray pos = BitBoard.position[minTile.X][minTile.Y];
+									BitArray dest = new BitArray(BitBoard.length, false).Or(pos).Or(BitBoard.GetAdjacency(pos));
+									List<Node> path = AStar.route(u.X, u.Y, dest);
+									foreach(Node n in path) 
+									{
+										if(u.MovementLeft == 0) break;
+										u.move(n.x, n.y);
+									}
+
+									if(1 >= Misc.ManhattanDistance(u, minTile))
+										u.dig(minTile);
+								}
             }
 
             BitBoard.UpdateAll(); // May cause water to change
