@@ -54,7 +54,7 @@ namespace CSClient
 							}
 
 						}
-						BitBoard.Update();
+						BitBoard.UpdateAll();
         }
 
         private static void missionAttackInRange(Unit u)
@@ -67,7 +67,7 @@ namespace CSClient
                         u.attack(unit);
                     }
                 }
-            BitBoard.Update();
+            BitBoard.UpdateAll();
         }
     }
 }

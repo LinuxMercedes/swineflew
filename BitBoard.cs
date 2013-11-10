@@ -20,7 +20,7 @@ class BitBoard
   public static BitArray full;
   public static BitArray[][] position;
 
-  // team specific occupancy bitboards
+  // team-specific occupancy bitboards
   public static BitArray myPumpStations;
   public static BitArray mySpawnBases;
   public static BitArray mySpawningSquares;
@@ -46,7 +46,11 @@ class BitBoard
   public static BitArray dirtTiles;
   public static BitArray iceCaps;
 
-  // initializes and populates the bitboard objects
+  // objective-specific bitboards
+  public static BitArray myConnectedPumpStations;
+  public static BitArray oppConnectedPumpStations;
+
+  // initializes and populates the bitboards
   public static void Initialize(AI ai)
   {
     // initialize player ids
@@ -218,21 +222,22 @@ class BitBoard
     oppNonMotionTiles.Or(iceCaps);
     oppMotionTiles = new BitArray(oppNonMotionTiles);
     oppMotionTiles.Xor(full);
+
+    // initialize special bitboards
+    myConnectedPumpStations = new BitArray(length, false);
+    oppConnectedPumpStations = new BitArray(length, false);
+
   }
 
-  // clears the data in the non-constant bitboard objects
-  public static void Reset()
+  // clears the data in the non-constant bitboards
+  public static void ResetAll()
   {
+    ResetUnits();
+
     myPumpStations.SetAll(false);
     mySpawningSquares.SetAll(false);
-    myWorkers.SetAll(false);
-    myScouts.SetAll(false);
-    myTanks.SetAll(false);
     oppPumpStations.SetAll(false);
     oppSpawningSquares.SetAll(false);
-    oppWorkers.SetAll(false);
-    oppScouts.SetAll(false);
-    oppTanks.SetAll(false);
     waterTiles.SetAll(false);
     trenchTiles.SetAll(false);
     dirtTiles.SetAll(false);
@@ -245,8 +250,19 @@ class BitBoard
     oppMotionTiles.SetAll(false);
   }
 
-  // populates the data in the bitboard objects for the current game state
-  public static void PopulateBitBoards()
+  // clears the data in the unit bitboards
+  public static void ResetUnits()
+  {
+    myWorkers.SetAll(false);
+    myScouts.SetAll(false);
+    myTanks.SetAll(false);
+    oppWorkers.SetAll(false);
+    oppScouts.SetAll(false);
+    oppTanks.SetAll(false);
+  }
+
+  // populates the data in all bitboards for the current game state
+  public static void PopulateAll()
   {
     // populate type-specific bitboards
     foreach (Tile tile in BaseAI.tiles)
@@ -297,6 +313,38 @@ class BitBoard
       }
     }
 
+    PopulateUnits();
+
+    // populate generic bitboards
+    myOccupiedTiles = new BitArray(length, false);
+    myOccupiedTiles.Or(myWorkers);
+    myOccupiedTiles.Or(myScouts);
+    myOccupiedTiles.Or(myTanks);
+    oppOccupiedTiles = new BitArray(length, false);
+    oppOccupiedTiles.Or(oppWorkers);
+    oppOccupiedTiles.Or(oppScouts);
+    oppOccupiedTiles.Or(oppTanks);
+    myNonMotionTiles = new BitArray(length, false);
+    myNonMotionTiles.Or(myOccupiedTiles);
+    myNonMotionTiles.Or(oppOccupiedTiles);
+    myNonMotionTiles.Or(mySpawningSquares);
+    myNonMotionTiles.Or(oppSpawnBases);
+    myNonMotionTiles.Or(iceCaps);
+    myMotionTiles = new BitArray(myNonMotionTiles);
+    myMotionTiles.Xor(full);
+    oppNonMotionTiles = new BitArray(length, false);
+    oppNonMotionTiles.Or(oppOccupiedTiles);
+    oppNonMotionTiles.Or(myOccupiedTiles);
+    oppNonMotionTiles.Or(oppSpawningSquares);
+    oppNonMotionTiles.Or(mySpawnBases);
+    oppNonMotionTiles.Or(iceCaps);
+    oppMotionTiles = new BitArray(oppNonMotionTiles);
+    oppMotionTiles.Xor(full);
+  }
+
+  // populates data in the unit bitboards for the current game state
+  public static void PopulateUnits()
+  {
     foreach (Unit unit in BaseAI.units)
     {
       switch (unit.Type)
@@ -333,39 +381,20 @@ class BitBoard
           break;
       }
     }
-
-    // populate generic bitboards
-    myOccupiedTiles = new BitArray(length, false);
-    myOccupiedTiles.Or(myWorkers);
-    myOccupiedTiles.Or(myScouts);
-    myOccupiedTiles.Or(myTanks);
-    oppOccupiedTiles = new BitArray(length, false);
-    oppOccupiedTiles.Or(oppWorkers);
-    oppOccupiedTiles.Or(oppScouts);
-    oppOccupiedTiles.Or(oppTanks);
-    myNonMotionTiles = new BitArray(length, false);
-    myNonMotionTiles.Or(myOccupiedTiles);
-    myNonMotionTiles.Or(oppOccupiedTiles);
-    myNonMotionTiles.Or(mySpawningSquares);
-    myNonMotionTiles.Or(oppSpawnBases);
-    myNonMotionTiles.Or(iceCaps);
-    myMotionTiles = new BitArray(myNonMotionTiles);
-    myMotionTiles.Xor(full);
-    oppNonMotionTiles = new BitArray(length, false);
-    oppNonMotionTiles.Or(oppOccupiedTiles);
-    oppNonMotionTiles.Or(myOccupiedTiles);
-    oppNonMotionTiles.Or(oppSpawningSquares);
-    oppNonMotionTiles.Or(mySpawnBases);
-    oppNonMotionTiles.Or(iceCaps);
-    oppMotionTiles = new BitArray(oppNonMotionTiles);
-    oppMotionTiles.Xor(full);
   }
 
-  // updates the bitboards
-  public static void Update()
+  // updates all non-constant bitboards
+  public static void UpdateAll()
   {
-    Reset();
-    PopulateBitBoards();
+    ResetAll();
+    PopulateAll();
+  }
+
+  // updates all unit bitboards
+  public static void UpdateUnits()
+  {
+    ResetUnits();
+    PopulateUnits();
   }
 
   // sets the value of a specific bit in a bitboard using (x,y) coordinates
@@ -378,6 +407,113 @@ class BitBoard
   public static bool GetBit(BitArray bitboard, int x, int y)
   {
     return bitboard.Get((x * height) + y);
+  }
+
+  // returns a bitboard of a pump station that exists on the specified coordinates,
+  // or return empty if no pump station exists on the specified coordinates
+  public static BitArray GetPumpStation(int x, int y)
+  {
+    // check to see if specified unit is on one of our pump stations
+    BitArray test = new BitArray(length, false).Or(myPumpStations);
+    test.And(position[x][y]);
+    if (test.Equals(empty))
+    {
+      return empty;
+    }
+
+    // create bitboard representing pump station the unit is standing on
+    BitArray pumpStation = new BitArray(length, false).Or(position[x][y]);
+    if (x - 1 >= 0)
+    {
+      pumpStation.Or(position[x - 1][y]);
+      if (y - 1 >= 0)
+      {
+        pumpStation.Or(position[x - 1][y - 1]);
+      }
+      if (y + 1 < height)
+      {
+        pumpStation.Or(position[x - 1][y + 1]);
+      }
+    }
+    if (x + 1 < width)
+    {
+      pumpStation.Or(position[x + 1][y]);
+      if (y - 1 >= 0)
+      {
+        pumpStation.Or(position[x + 1][y - 1]);
+      }
+      if (y + 1 < height)
+      {
+        pumpStation.Or(position[x + 1][y + 1]);
+      }
+    }
+    if (y - 1 >= 0)
+    {
+      pumpStation.Or(position[x][y - 1]);
+    }
+    if (y + 1 < height)
+    {
+      pumpStation.Or(position[x][y + 1]);
+    }
+    return pumpStation.And(myPumpStations);
+  }
+
+  // returns a bitboard of all connected pump stations for the specified player
+  public static BitArray GetConnectedPumpStations(int player)
+  {
+    // get bitboard of all pump stations for specified player
+    BitArray pumpStations = new BitArray(length, false);
+    if (player == myID)
+    {
+      pumpStations.Or(myPumpStations);
+    }
+    else if (player == oppID)
+    {
+      pumpStations.Or(oppPumpStations);
+    }
+    if (pumpStations.Equals(empty))
+    {
+      return empty;
+    }
+
+    // get adjacency bitboards for each pump station
+    
+
+
+    return empty;
+  }
+
+  // returns the adjacency bitboard for a specified bitboard
+  public static BitArray GetAdjacency(BitArray bitboard)
+  {
+    BitArray adjacency = new BitArray(bitboard.Length, false).Or(bitboard);
+    adjacency.Or(ShiftLeft(bitboard, 1));
+    adjacency.Or(ShiftRight(bitboard, 1));
+    adjacency.Or(ShiftLeft(adjacency, width));
+    adjacency.Or(ShiftRight(adjacency, width));
+    return adjacency.Xor(bitboard);
+  }
+
+  // returns the bit array shifted a specified number of bits to the left
+  public static BitArray ShiftLeft(BitArray bitboard, int shift)
+  {
+    BitArray shiftedBitBoard = new BitArray(bitboard.Length, false);
+    for (int i = bitboard.Length - 1; (i - shift) >= 0; i--)
+    {
+      shiftedBitBoard.Set((i - shift), bitboard.Get(i));
+    }
+    return shiftedBitBoard;
+  }
+
+  // returns the bit array shifted a specified number of bits to the right
+  public static BitArray ShiftRight(BitArray bitboard, int shift)
+  {
+    BitArray shiftedBitBoard = new BitArray(bitboard.Length, false);
+    for (int i = 0; (i + shift) < bitboard.Length; i++)
+    {
+      shiftedBitBoard.Set((i + shift), bitboard.Get(i));
+    }
+    return shiftedBitBoard;
   }
 
   // prints the coordinates of the high bits in the specified bitboard
