@@ -205,11 +205,7 @@ class AI : BaseAI
     //our code
     public void ourRun()
     {
-				System.Console.WriteLine("Unit count: " + units.Length);
-				foreach (Unit u in units) 
-				{
-					System.Console.WriteLine("Unit at: " + u.X + " " + u.Y + " type: " + u.Type);
-				}
+				System.Console.WriteLine("Turn number " + turnNumber());
 				spawnUnits();
         CIA.executeMissions(assignMissions());
     }
