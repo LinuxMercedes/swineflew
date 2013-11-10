@@ -106,7 +106,7 @@ namespace CSClient
                 {
                     if (unit.Owner != u.Owner)
                     {
-                        if (u.Range >= Misc.ManhattanDistance(u, unit))
+                        if (u.Range >= Misc.ManhattanDistance(u, unit) && unit.Type == (int)AI.Types.Tank)
                         {
 													stop = true;
 													break;
