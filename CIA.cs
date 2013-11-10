@@ -49,7 +49,7 @@ namespace CSClient
 							// curl up in a ball and cry
 							if(!u.move(n.x, n.y))
 							{
-								System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y "!!!");
+								System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y + "!!!");
 								break;
 							}
 
