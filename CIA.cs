@@ -44,7 +44,15 @@ namespace CSClient
 						{
 							if(u.MovementLeft == 0) break;
 
-							u.move(n.x, n.y);
+							// Try to move
+							// if you fail to move, 
+							// curl up in a ball and cry
+							if(!u.move(n.x, n.y))
+							{
+								System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y "!!!");
+								break;
+							}
+
 							System.Console.Write(n.x);
 						  System.Console.Write(" ");
 							System.Console.WriteLine(n.y);
