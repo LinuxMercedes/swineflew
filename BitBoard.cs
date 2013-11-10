@@ -490,9 +490,12 @@ class BitBoard
           bool validConnected = true;
           foreach (Tile tile in BaseAI.tiles)
           {
-            if (tile.X == path[path.Count - 1].x && tile.Y == path[path.Count - 1].y && tile.WaterAmount <= 1)
+            if (tile.X == path[path.Count - 1].x && tile.Y == path[path.Count - 1].y)
             {
-              validConnected = false;
+              if (tile.WaterAmount <= 1)
+              {
+                validConnected = false;
+              }
               break;
             }
           }
@@ -511,10 +514,16 @@ class BitBoard
     return connectedPumpStations;
   }
 
+  // returns the adjacency bitboard (excluding diagonals) for a specified bitboard
+  public static BitArray GetNonDiagonalAdjacency(BitArray bitboard)
+  {
+    return new BitArray(bitboard).Or(ShiftLeft(bitboard, 1).And(validLeft)).Or(ShiftRight(bitboard, 1).And(validRight)).Or(ShiftLeft(bitboard, height)).Or(ShiftRight(bitboard, height));
+  }
+
   // returns the adjacency bitboard for a specified bitboard
   public static BitArray GetAdjacency(BitArray bitboard)
   {
-    BitArray adjacency = new BitArray(bitboard.Length, false).Or(bitboard).Or(ShiftLeft(bitboard, 1).And(validLeft)).Or(ShiftRight(bitboard, 1).And(validRight));
+    BitArray adjacency = new BitArray(bitboard).Or(ShiftLeft(bitboard, 1).And(validLeft)).Or(ShiftRight(bitboard, 1).And(validRight));
     return adjacency.Or(ShiftLeft(adjacency, height)).Or(ShiftRight(adjacency, height)).Xor(bitboard);
   }
 
