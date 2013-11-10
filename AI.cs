@@ -278,16 +278,16 @@ class AI : BaseAI
 
     public void betterSpawn()
     {
-        if (turnNumber() <= 2)
-        {
-            foreach (PumpStation p in pumpStations)
-            {
-                if (p.Owner == playerID())
-                {
+        //if (turnNumber() <= 2)
+        //{
+        //    foreach (PumpStation p in pumpStations)
+        //    {
+        //        if (p.Owner == playerID())
+        //        {
                    
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
         spawnUnits();
     }
 
@@ -304,7 +304,7 @@ class AI : BaseAI
                 }
                 else if (u.Type == (int)Types.Scout)
                 {
-                    missions.Add(new Mission(u, () => BitBoard.oppPumpStations, Mission.missionTypes.goTo));
+                    missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
                 }
                 missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
             }
