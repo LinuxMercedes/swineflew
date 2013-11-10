@@ -359,9 +359,6 @@ class BitBoard
     oppNonMotionTiles.Or(iceCaps);
     oppMotionTiles = new BitArray(oppNonMotionTiles);
     oppMotionTiles.Xor(full);
-
-    // debug
-    Console.WriteLine("Populate Complete.");
   }
 
   // updates the bitboards
