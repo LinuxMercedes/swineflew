@@ -300,13 +300,24 @@ class AI : BaseAI
         if (turnNumber() <= 2)
         {
             HashSet<int> pumpid = new HashSet<int>();
+            List<int> pumpStationIndexes = BitBoard.GetIndexes(BitBoard.myPumpStations);
+
             foreach (Tile t in tiles)
             {
                 if (t.Owner != playerID()) continue;
                 if (t.PumpID == -1) continue;
                 if (pumpid.Contains(t.PumpID)) continue;
                 if (t.IsSpawning) continue;
-                bool temp = false;
+                bool temp = true;
+                foreach (int i in pumpStationIndexes)
+                {
+                    if (BitBoard.GetX(i) == t.X && BitBoard.GetY(i) == t.Y)
+                    {
+                        temp = false;
+                        break;
+                    }
+                }
+                if (temp) continue;
                 foreach (Unit u in units)
                 {
                     if (u.X == t.X && u.Y == t.Y)

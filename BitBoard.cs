@@ -458,7 +458,7 @@ class BitBoard
     // get connected pump stations
     BitArray connectedPumpStations = new BitArray(length, false);
     BitArray waterAndTrenchTiles = new BitArray(length, false).Or(waterTiles).Or(trenchTiles);
-    List<int> pumpStationIndeces = GetIndeces(pumpStations);
+    List<int> pumpStationIndeces = GetIndexes(pumpStations);
     foreach (int index in pumpStationIndeces)
     {
       // get current pump station
@@ -476,7 +476,7 @@ class BitBoard
         pumpStations.Xor(currentPumpStation);
         continue;
       }
-      List<int> startingPoints = GetIndeces(currentAdjacency);
+      List<int> startingPoints = GetIndexes(currentAdjacency);
 
       // get path from starting points to nearest connected glacier
       foreach (int start in startingPoints)
@@ -550,17 +550,17 @@ class BitBoard
   }
 
   // gets a list of indeces of the high bits in the specified bitboard
-  public static List<int> GetIndeces(BitArray bitboard)
+  public static List<int> GetIndexes(BitArray bitboard)
   {
-    List<int> indeces = new List<int>(0);
+    List<int> indexes = new List<int>(0);
     for (int i = 0; i < bitboard.Length; i++)
     {
       if (bitboard.Get(i))
       {
-        indeces.Add(i);
+        indexes.Add(i);
       }
     }
-    return indeces;
+    return indexes;
   }
 
   // gets the X coordinate from a bitboard index
