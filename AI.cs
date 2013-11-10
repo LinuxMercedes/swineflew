@@ -208,7 +208,7 @@ class AI : BaseAI
     //our code =================================================
 
     public static bool gotClose;
-    public static List<int> defenders = new List<int>();
+    public static List<Unit> defenders = new List<Unit>();
     public static List<int> xSpawn = new List<int>();
     public static List<int> ySpawn = new List<int>();
 
@@ -221,7 +221,7 @@ class AI : BaseAI
                 if (u.Owner == playerID())
                     if (u.X == xSpawn[0] && u.Y == ySpawn[0])
                     {
-                        defenders.Add(u.Id);
+                        defenders.Add(u);
                         break;
                     }
             }
@@ -281,6 +281,20 @@ class AI : BaseAI
                             for (int j = 0; j < units.Length; j++)
                                 if (tiles[i].X == units[j].X && tiles[i].Y == units[j].Y)
                                     canSpawn = false;
+
+                            foreach (Unit u in defenders)
+                            {
+                                if (BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
+                                    (BitBoard.myConnectedPumpStations).Or
+                                    (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), tiles[i].X, tiles[i].Y)
+                                    && BitBoard.GetBit(new BitArray(BitBoard.length, false).Or
+                                    (BitBoard.myConnectedPumpStations).Or
+                                    (BitBoard.GetAdjacency(BitBoard.myConnectedPumpStations)), u.X, u.Y)
+                                   )
+                                {
+                                    canSpawn = false;
+                                }
+                            }
 
                             // If possible, spawn!
                             if (canSpawn)
@@ -345,7 +359,7 @@ class AI : BaseAI
         {
             if (u.Owner == playerID())
             {
-                if (defenders.Contains(u.Id))
+                if (defenders.Contains(u))
                 {
                     missions.Add(new Mission(u, /*() => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y)*/
 													() => BitBoard.myConnectedPumpStations, Mission.missionTypes.defendAndTrench));
