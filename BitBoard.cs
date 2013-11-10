@@ -469,6 +469,7 @@ class BitBoard
         if (path.Count != 0)
         {
           connectedPumpStations.Or(currentPumpStation);
+					break;
         }
       }
 
