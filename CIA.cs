@@ -104,19 +104,30 @@ namespace CSClient
                         }
                     }
                 }
+
 								if (minTile != null)
 								{
+									Console.WriteLine("Found a tile " + minTile.X + " " + minTile.Y);
 									BitArray pos = BitBoard.position[minTile.X][minTile.Y];
 									BitArray dest = new BitArray(BitBoard.length, false).Or(pos).Or(BitBoard.GetAdjacency(pos));
 									List<Node> path = AStar.route(u.X, u.Y, dest);
+									int x = u.X;
+									int y = u.Y;
+
+									Console.WriteLine(Misc.ManhattanDistance(u, minTile));
 									foreach(Node n in path) 
 									{
+										Console.WriteLine("moving...");
 										if(u.MovementLeft == 0) break;
 										u.move(n.x, n.y);
 									}
 
+									if(x == u.X && y == u.Y) Console.WriteLine("Same place");
 									if(1 >= Misc.ManhattanDistance(u, minTile))
+									{
+										Console.WriteLine("Digging...");
 										u.dig(minTile);
+									}
 								}
             }
 
