@@ -200,6 +200,10 @@ class BitBoard
     myMotionTiles = myNonMotionTiles.Xor(full);
     oppNonMotionTiles = oppOccupiedTiles.Or(myOccupiedTiles.Or(oppSpawningSquares.Or(mySpawnBases.Or(iceCaps))));
     oppMotionTiles = oppNonMotionTiles.Xor(full);
+
+    // debug
+    PrintBitBoard(myWorkers);
+    Console.WriteLine("Initialize Complete.");
   }
 
   // clears the data in the non-constant bitboard objects
@@ -225,6 +229,10 @@ class BitBoard
     myMotionTiles.SetAll(false);
     oppNonMotionTiles.SetAll(false);
     oppMotionTiles.SetAll(false);
+
+    // debug
+    PrintBitBoard(myWorkers);
+    Console.WriteLine("Reset Complete.");
   }
 
   // populates the data in the bitboard objects for the current game state
@@ -323,6 +331,10 @@ class BitBoard
     myMotionTiles = myNonMotionTiles.Xor(full);
     oppNonMotionTiles = oppOccupiedTiles.Or(myOccupiedTiles.Or(oppSpawningSquares.Or(mySpawnBases).Or(iceCaps)));
     oppMotionTiles = oppNonMotionTiles.Xor(full);
+
+    // debug
+    PrintBitBoard(myWorkers);
+    Console.WriteLine("Populate Complete.");
   }
 
   // updates the bitboards
@@ -351,7 +363,7 @@ class BitBoard
     {
       if (bitboard.Get(i))
       {
-        Console.WriteLine(bitboard.Get(i) + ": " + (i / height) + " " + (i % height));
+        Console.WriteLine((i / height) + " " + (i % height));
       }
     }
   }
