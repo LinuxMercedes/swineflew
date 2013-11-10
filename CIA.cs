@@ -25,11 +25,12 @@ namespace CSClient
                         missionGoTo(m.agent, target, m.walkThroughWater);
                         missionAttackInRange(m.agent);//todo actually implement goattack
                         break;
-										case Mission.missionTypes.defendAndTrench:
-												missionGoTo(m.agent, target, m.walkThroughWater);
-												missionAttackInRange(m.agent);
-												missionTrenchAroundTarget(m.agent, target);
-												break;
+                    case Mission.missionTypes.defendAndTrench:
+                        missionGoTo(m.agent, target, m.walkThroughWater);
+                        missionAttackInRange(m.agent);
+                        missionTrenchAroundTarget(m.agent, target);
+                        missionAttackInRange(m.agent);
+                        break;
                 }
             }
         }
@@ -61,8 +62,8 @@ namespace CSClient
                     System.Console.WriteLine("Could not move from " + u.X + " " + u.Y + " to " + n.x + " " + n.y + "!!!");
                     break;
                 }
-						}
-						BitBoard.UpdateUnits();
+            }
+            BitBoard.UpdateUnits();
         }
 
         private static void missionAttackInRange(Unit u)
@@ -81,32 +82,32 @@ namespace CSClient
             BitBoard.UpdateUnits();
         }
 
-				private static void missionTrenchAroundTarget(Unit u, BitArray target)
-				{
-					BitArray adj = BitBoard.GetAdjacency(target);
-					if(!u.HasDug)
-					{
-						Tile minTile = null;
-						foreach (Tile tile in AI.tiles)
-						{
-							if(BitBoard.GetBit(adj, tile.X, tile.Y))
-							{
-								if(minTile == null)
-								{
-									minTile = tile;
-								}
-									
-								if(tile.Depth < minTile.Depth)
-								{
-									minTile = tile;
-								}
-							}
-						}
+        private static void missionTrenchAroundTarget(Unit u, BitArray target)
+        {
+            BitArray adj = BitBoard.GetAdjacency(target);
+            if (!u.HasDug)
+            {
+                Tile minTile = null;
+                foreach (Tile tile in AI.tiles)
+                {
+                    if (BitBoard.GetBit(adj, tile.X, tile.Y))
+                    {
+                        if (minTile == null)
+                        {
+                            minTile = tile;
+                        }
 
-						u.dig(minTile);
-					}
+                        if (tile.Depth < minTile.Depth)
+                        {
+                            minTile = tile;
+                        }
+                    }
+                }
 
-					BitBoard.UpdateAll(); // May cause water to change
-				}
+                u.dig(minTile);
+            }
+
+            BitBoard.UpdateAll(); // May cause water to change
+        }
     }
 }

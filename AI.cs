@@ -194,7 +194,7 @@ class AI : BaseAI
     {
         gotClose = false;
         BitBoard.Initialize(this);
-        
+
 
         // debug
         Console.WriteLine("\nMy Pump Stations:");
@@ -222,10 +222,10 @@ class AI : BaseAI
 
     public void ourRun()
     {
-				System.Console.WriteLine("Turn number " + turnNumber());
-				BitBoard.UpdateAll();
-				betterSpawn();
-				BitBoard.UpdateAll();
+        System.Console.WriteLine("Turn number " + turnNumber());
+        BitBoard.UpdateAll();
+        betterSpawn();
+        BitBoard.UpdateAll();
         CIA.executeMissions(assignMissions());
     }
 
@@ -312,8 +312,9 @@ class AI : BaseAI
             {
                 if (defenders.Contains(u.Id))
                 {
-                    missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
-                    missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
+                    missions.Add(new Mission(u, () => BitBoard.GetPumpStation(BitBoard.myConnectedPumpStations, u.X, u.Y), Mission.missionTypes.defendAndTrench));
+                    //missions.Add(new Mission(u, () => BitBoard.myConnectedPumpStations, Mission.missionTypes.goTo));
+                    //missions.Add(new Mission(u, () => BitBoard.oppOccupiedTiles, Mission.missionTypes.goAttack));
                 }
                 else if (u.Type == (int)Types.Scout)
                 {
