@@ -53,9 +53,6 @@ namespace CSClient
 								break;
 							}
 
-							System.Console.Write(n.x);
-						  System.Console.Write(" ");
-							System.Console.WriteLine(n.y);
 						}
 						BitBoard.Update();
         }
