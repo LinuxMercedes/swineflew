@@ -192,6 +192,7 @@ class AI : BaseAI
     /// </summary>
     public override void init()
     {
+        gotClose = false;
         BitBoard.Initialize(this);
     }
 
@@ -202,13 +203,17 @@ class AI : BaseAI
 
     public AI(IntPtr c) : base(c) { }
 
-    //our code
+    //our code =================================================
+
+    public static bool gotClose;
+    public static List<int> defenders = new List<int>();
+
     public void ourRun()
     {
-				System.Console.WriteLine("Turn number " + turnNumber());
-				BitBoard.Update();
-				spawnUnits();
-				BitBoard.Update();
+        System.Console.WriteLine("Turn number " + turnNumber());
+        BitBoard.Update();
+        betterSpawn();
+        BitBoard.Update();
         CIA.executeMissions(assignMissions());
     }
 
@@ -271,6 +276,12 @@ class AI : BaseAI
         }
     }
 
+    public void betterSpawn()
+    {
+
+        spawnUnits();
+    }
+
     public List<Mission> assignMissions()
     {
         List<Mission> missions = new List<Mission>();
@@ -278,9 +289,16 @@ class AI : BaseAI
         {
             if (u.Owner == playerID())
             {
-                missions.Add(new Mission(u, () => BitBoard.oppPumpStations, Mission.missionTypes.goTo));
-                missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
+                if (defenders.Contains(u.Id))
+                {
+                    //defend code
+                }
+                else if (u.Type == (int)Types.Scout)
+                {
+                    missions.Add(new Mission(u, () => BitBoard.oppPumpStations, Mission.missionTypes.goTo));
+                }
             }
+            missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
         }
         return missions;
     }

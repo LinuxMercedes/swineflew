@@ -62,9 +62,12 @@ namespace CSClient
             if (!u.HasAttacked)
                 foreach (Unit unit in AI.units)
                 {
-                    if (u.Range >= Misc.ManhattanDistance(u, unit))
+                    if (unit.Owner != u.Owner)
                     {
-                        u.attack(unit);
+                        if (u.Range >= Misc.ManhattanDistance(u, unit))
+                        {
+                            u.attack(unit);
+                        }
                     }
                 }
             BitBoard.Update();
