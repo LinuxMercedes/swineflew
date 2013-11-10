@@ -260,7 +260,10 @@ class AI : BaseAI
         {
             int cost = Int32.MaxValue;
             for (int j = 0; j < unitTypes.Length; j++)
-                if (unitTypes[j].Type == (int)Types.Scout)
+
+                if (turnNumber() <= 1 && unitTypes[j].Type == (int)Types.Scout)
+                    cost = unitTypes[j].Cost;
+                else if (turnNumber() > 1 && unitTypes[j].Type == (int)Types.Worker)
                     cost = unitTypes[j].Cost;
 
             // If there is enough oxygen to spawn the unit...
@@ -314,7 +317,10 @@ class AI : BaseAI
                             xSpawn.Add(tiles[i].X);
                             ySpawn.Add(tiles[i].Y);
                         }
-                        tiles[i].spawn((int)Types.Scout);
+                        if (turnNumber() <= 1)
+                            tiles[i].spawn((int)Types.Worker);
+                        else
+                            tiles[i].spawn((int)Types.Scout);
                     }
                 }
             }
