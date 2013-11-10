@@ -278,7 +278,7 @@ class AI : BaseAI
             if (u.Owner == playerID())
             {
                 missions.Add(new Mission(u, () => BitBoard.oppPumpStations, Mission.missionTypes.goTo));
-                missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackAdjacent));
+                missions.Add(new Mission(u, () => BitBoard.empty, Mission.missionTypes.attackInRange));
             }
         }
         return missions;
