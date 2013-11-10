@@ -75,16 +75,24 @@ namespace CSClient
         private static void missionAttackInRange(Unit u)
         {
             if (!u.HasAttacked)
+						{
+							  Unit goal = null;
                 foreach (Unit unit in AI.units)
                 {
                     if (unit.Owner != u.Owner)
                     {
                         if (u.Range >= Misc.ManhattanDistance(u, unit))
                         {
-                            u.attack(unit);
+													if(goal == null || goal.HealthLeft > unit.HealthLeft)
+													{
+														goal = unit;
+													}
                         }
                     }
                 }
+								if( goal != null)
+									u.attack(goal);
+						}
             BitBoard.UpdateUnits();
         }
 
